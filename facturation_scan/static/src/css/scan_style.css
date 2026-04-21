@@ -1,0 +1,231 @@
+/* ============================================================
+   Facturation Scan — styles interface
+   Compatible Bootstrap 5 (Odoo 17/18)
+   ============================================================ */
+
+/* ── Zone de scan ─────────────────────────────────────────── */
+
+.o_scan_zone {
+    margin: 16px 0 20px 0;
+    padding: 16px 20px;
+    background: #f0f4ff;
+    border: 2px dashed #b3c4f5;
+    border-radius: 10px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.o_scan_zone:focus-within {
+    border-color: #0d6efd;
+    background: #e8f0fe;
+}
+
+.o_scan_title {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    color: #344054;
+}
+
+/* ── Widget barcode ───────────────────────────────────────── */
+
+.o_barcode_scanner_field {
+    max-width: 640px;
+}
+
+.o_barcode_input {
+    font-size: 1.1rem;
+    height: 48px;
+    letter-spacing: 0.04em;
+}
+
+.o_barcode_input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.o_barcode_input:disabled {
+    background-color: #e9ecef;
+    opacity: 0.7;
+}
+
+.o_barcode_help {
+    font-size: 0.82rem;
+    color: #6c757d;
+}
+
+/* ── Bouton caméra ───────────────────────────────────────── */
+
+.o_camera_btn {
+    white-space: nowrap;
+}
+
+/* ── Overlay caméra (plein écran) ────────────────────────── */
+
+.o_camera_overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.o_camera_container {
+    width: 100%;
+    max-width: 620px;
+    background: #1a1a2e;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+.o_camera_header {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    background: #16213e;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* ── Viewport vidéo ──────────────────────────────────────── */
+
+.o_camera_viewport {
+    position: relative;
+    background: #000;
+    line-height: 0;   /* supprime l'espace sous la vidéo */
+}
+
+.o_camera_video {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    display: block;
+}
+
+/* ── Cadre de visée ──────────────────────────────────────── */
+
+.o_camera_frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 65%;
+    height: 120px;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.o_camera_corner {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-color: #00e676;
+    border-style: solid;
+}
+.o_camera_corner.tl { top: 0; left: 0;  border-width: 3px 0 0 3px; }
+.o_camera_corner.tr { top: 0; right: 0; border-width: 3px 3px 0 0; }
+.o_camera_corner.bl { bottom: 0; left: 0;  border-width: 0 0 3px 3px; }
+.o_camera_corner.br { bottom: 0; right: 0; border-width: 0 3px 3px 0; }
+
+.o_camera_scanline {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #00e676 50%, transparent 100%);
+    animation: scanline 2s ease-in-out infinite;
+}
+@keyframes scanline {
+    0%   { top: 0;    opacity: 1; }
+    90%  { top: 100%; opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* ── Badge produit détecté ───────────────────────────────── */
+
+.o_camera_detected {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 230, 118, 0.9);
+    color: #000;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 6px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    animation: fadeInUp 0.3s ease;
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Contrôles bas ───────────────────────────────────────── */
+
+.o_camera_controls {
+    padding: 14px 18px;
+    text-align: center;
+    background: #16213e;
+}
+
+/* ── Tableau panier ───────────────────────────────────────── */
+
+/* Accentuation de la colonne sous-total */
+.o_list_view .o_data_row td[name="subtotal"] {
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+/* Ligne épinglée total en bas du tableau */
+.o_list_view tfoot td {
+    font-weight: 700;
+    font-size: 1rem;
+    background: #f8f9fa;
+}
+
+/* ── Responsive (mobile / tablette) ─────────────────────────── */
+
+@media (max-width: 768px) {
+    .o_scan_zone {
+        padding: 12px;
+    }
+
+    .o_barcode_scanner_field {
+        max-width: 100%;
+    }
+
+    .o_barcode_input {
+        font-size: 1rem;
+        height: 44px;
+    }
+
+    /* Empiler les colonnes moins importantes sur petit écran */
+    .o_list_view .o_optional_columns_dropdown {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .o_scan_zone {
+        margin: 8px 0;
+    }
+
+    /* Bouton Ajouter prend toute la largeur sur très petit écran */
+    .o_barcode_scanner_field .input-group {
+        flex-wrap: wrap;
+    }
+
+    .o_barcode_scanner_field .input-group .btn {
+        flex: 1 1 100%;
+        margin-top: 6px;
+        border-radius: 6px !important;
+    }
+}
