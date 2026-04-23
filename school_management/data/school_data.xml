@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Séquence matricule élèves -->
+    <record id="seq_school_student" model="ir.sequence">
+        <field name="name">Matricule Élève</field>
+        <field name="code">school.student</field>
+        <field name="prefix">EL%(year)s</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <!-- Séquence référence paiement -->
+    <record id="seq_school_payment" model="ir.sequence">
+        <field name="name">Référence Paiement Scolarité</field>
+        <field name="code">school.payment</field>
+        <field name="prefix">PAY/%(year)s/%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <!-- Matières par défaut -->
+    <record id="subject_math" model="school.subject">
+        <field name="name">Mathématiques</field>
+        <field name="code">MATH</field>
+        <field name="coefficient">3.0</field>
+    </record>
+
+    <record id="subject_french" model="school.subject">
+        <field name="name">Français</field>
+        <field name="code">FR</field>
+        <field name="coefficient">3.0</field>
+    </record>
+
+    <record id="subject_sciences" model="school.subject">
+        <field name="name">Sciences naturelles</field>
+        <field name="code">SCI</field>
+        <field name="coefficient">2.0</field>
+    </record>
+
+    <record id="subject_history" model="school.subject">
+        <field name="name">Histoire-Géographie</field>
+        <field name="code">HG</field>
+        <field name="coefficient">2.0</field>
+    </record>
+
+    <record id="subject_english" model="school.subject">
+        <field name="name">Anglais</field>
+        <field name="code">ANG</field>
+        <field name="coefficient">2.0</field>
+    </record>
+
+    <record id="subject_physics" model="school.subject">
+        <field name="name">Physique-Chimie</field>
+        <field name="code">PC</field>
+        <field name="coefficient">2.0</field>
+    </record>
+
+    <record id="subject_edf" model="school.subject">
+        <field name="name">Éducation physique</field>
+        <field name="code">EPS</field>
+        <field name="coefficient">1.0</field>
+    </record>
+
+    <record id="subject_arts" model="school.subject">
+        <field name="name">Arts plastiques</field>
+        <field name="code">ARTS</field>
+        <field name="coefficient">1.0</field>
+    </record>
+
+    <record id="subject_civic" model="school.subject">
+        <field name="name">Éducation civique</field>
+        <field name="code">ECM</field>
+        <field name="coefficient">1.0</field>
+    </record>
+
+    <record id="subject_philo" model="school.subject">
+        <field name="name">Philosophie</field>
+        <field name="code">PHILO</field>
+        <field name="coefficient">2.0</field>
+    </record>
+</odoo>

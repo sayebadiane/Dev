@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. Groupe de base : Enseignant -->
+    <record id="group_school_teacher" model="res.groups">
+        <field name="name">Enseignant / École</field>
+    </record>
+
+    <!-- 2. Secrétaire : hérite de Enseignant -->
+    <record id="group_school_secretary" model="res.groups">
+        <field name="name">Secrétaire / École</field>
+        <field name="implied_ids" eval="[(4, ref('group_school_teacher'))]"/>
+    </record>
+
+    <!-- 3. Directeur : hérite de Secrétaire -->
+    <record id="group_school_manager" model="res.groups">
+        <field name="name">Directeur / École</field>
+        <field name="implied_ids" eval="[(4, ref('group_school_secretary'))]"/>
+    </record>
+</odoo>

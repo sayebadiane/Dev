@@ -1,0 +1,117 @@
+/* ===== Dashboard École - Styles ===== */
+
+.school_dashboard_header h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    border-left: 5px solid #3498db;
+    padding-left: 12px;
+    margin-bottom: 20px;
+}
+
+.school_section_title {
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+/* ===== Stat Cards ===== */
+.school_stat_card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    color: white;
+    min-height: 100px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.school_stat_card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+}
+
+.school_stat_blue    { background: linear-gradient(135deg, #3498db, #2980b9); }
+.school_stat_green   { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+.school_stat_orange  { background: linear-gradient(135deg, #e67e22, #d35400); }
+.school_stat_purple  { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+.school_stat_indigo  { background: linear-gradient(135deg, #5dade2, #2471a3); }
+.school_stat_teal    { background: linear-gradient(135deg, #1abc9c, #16a085); }
+.school_stat_yellow  { background: linear-gradient(135deg, #f39c12, #d68910); }
+.school_stat_red     { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+.school_stat_icon {
+    font-size: 2.5rem;
+    opacity: 0.85;
+    margin-right: 18px;
+    min-width: 50px;
+    text-align: center;
+}
+
+.school_stat_content {
+    flex: 1;
+}
+
+.school_stat_value {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.school_stat_value.small {
+    font-size: 1.3rem;
+}
+
+.school_stat_value .o_field_widget {
+    color: white !important;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.school_stat_label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-top: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.school_stat_sub {
+    font-size: 0.78rem;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+.school_stat_sub .o_field_widget {
+    color: white !important;
+    font-size: inherit;
+}
+
+/* ===== Quick Links ===== */
+.school_quick_links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.school_quick_btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.school_quick_btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}

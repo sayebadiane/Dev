@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- FORM VIEW -->
+    <record id="view_school_student_form" model="ir.ui.view">
+        <field name="name">school.student.form</field>
+        <field name="model">school.student</field>
+        <field name="arch" type="xml">
+            <form string="Fiche Élève">
+                <header>
+                    <button name="action_activate" string="Activer" type="object"
+                            class="btn-success"
+                            invisible="state == 'active'"/>
+                    <button name="action_deactivate" string="Désactiver" type="object"
+                            class="btn-danger"
+                            invisible="state == 'inactive'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,inactive"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_payments" type="object"
+                                class="oe_stat_button" icon="fa-money">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="payment_count"/>
+                                </span>
+                                <span class="o_stat_text">Paiements</span>
+                            </div>
+                        </button>
+                        <button name="action_view_absences" type="object"
+                                class="oe_stat_button" icon="fa-calendar-times-o">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="absence_count"/>
+                                </span>
+                                <span class="o_stat_text">Absences</span>
+                            </div>
+                        </button>
+                        <button name="action_view_bulletins" type="object"
+                                class="oe_stat_button" icon="fa-file-text">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="bulletin_count"/>
+                                </span>
+                                <span class="o_stat_text">Bulletins</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="photo" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="firstname" placeholder="Prénom"/>
+                            <field name="name" placeholder="NOM"/>
+                        </h1>
+                        <h4 class="text-muted">
+                            Matricule : <field name="registration_number" readonly="1"/>
+                        </h4>
+                    </div>
+                    <group>
+                        <group string="Informations personnelles">
+                            <field name="date_of_birth"/>
+                            <field name="age" readonly="1"/>
+                            <field name="gender"/>
+                            <field name="phone"/>
+                            <field name="address"/>
+                        </group>
+                        <group string="Scolarité">
+                            <field name="class_id"/>
+                            <field name="school_year" readonly="1"/>
+                            <field name="unpaid_amount" readonly="1"
+                                   decoration-danger="unpaid_amount &gt; 0"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Parents / Tuteurs" name="parents">
+                            <field name="parent_ids" widget="many2many_tags"/>
+                            <field name="parent_ids">
+                                <list string="Parents">
+                                    <field name="full_name"/>
+                                    <field name="relationship"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Paiements" name="payments">
+                            <field name="payment_ids" readonly="1">
+                                <list string="Paiements" decoration-danger="state == 'unpaid'"
+                                      decoration-warning="state == 'partial'"
+                                      decoration-success="state == 'paid'">
+                                    <field name="name"/>
+                                    <field name="period"/>
+                                    <field name="amount_due"/>
+                                    <field name="amount_paid"/>
+                                    <field name="amount_remaining"/>
+                                    <field name="state" widget="badge"
+                                           decoration-danger="state == 'unpaid'"
+                                           decoration-warning="state == 'partial'"
+                                           decoration-success="state == 'paid'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Absences" name="absences">
+                            <field name="absence_ids" readonly="1">
+                                <list string="Absences" decoration-danger="not is_present">
+                                    <field name="date"/>
+                                    <field name="is_present" widget="boolean_toggle"/>
+                                    <field name="reason"/>
+                                    <field name="justified" widget="boolean"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Bulletins" name="bulletins">
+                            <field name="bulletin_ids" readonly="1">
+                                <list string="Bulletins">
+                                    <field name="school_year"/>
+                                    <field name="trimester"/>
+                                    <field name="average"/>
+                                    <field name="rank"/>
+                                    <field name="appreciation"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'validated'"
+                                           decoration-muted="state == 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes internes" name="notes">
+                            <field name="note" placeholder="Notes et remarques..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- LIST VIEW -->
+    <record id="view_school_student_list" model="ir.ui.view">
+        <field name="name">school.student.list</field>
+        <field name="model">school.student</field>
+        <field name="arch" type="xml">
+            <list string="Élèves" decoration-muted="state == 'inactive'">
+                <field name="photo" widget="image" options="{'size': [40, 40]}"/>
+                <field name="registration_number"/>
+                <field name="full_name"/>
+                <field name="gender"/>
+                <field name="class_id"/>
+                <field name="phone"/>
+                <field name="unpaid_amount" decoration-danger="unpaid_amount &gt; 0"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state == 'inactive'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- KANBAN VIEW (Odoo 19) -->
+    <record id="view_school_student_kanban" model="ir.ui.view">
+        <field name="name">school.student.kanban</field>
+        <field name="model">school.student</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="full_name"/>
+                <field name="class_id"/>
+                <field name="photo"/>
+                <field name="state"/>
+                <field name="unpaid_amount"/>
+                <field name="registration_number"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside>
+                            <field name="photo" widget="image"
+                                   class="o_kanban_image_fill_left o_image_64_max"/>
+                        </aside>
+                        <main>
+                            <field name="full_name" class="fw-bold fs-5"/>
+                            <div class="text-muted">
+                                <field name="class_id"/>
+                            </div>
+                            <div class="text-muted small">
+                                <field name="registration_number"/>
+                            </div>
+                            <div t-if="record.unpaid_amount.raw_value > 0" class="text-danger small">
+                                Impayé : <field name="unpaid_amount"/>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW -->
+    <record id="view_school_student_search" model="ir.ui.view">
+        <field name="name">school.student.search</field>
+        <field name="model">school.student</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un élève">
+                <field name="name" string="Nom"/>
+                <field name="firstname" string="Prénom"/>
+                <field name="registration_number" string="Matricule"/>
+                <field name="class_id" string="Classe"/>
+                <field name="phone"/>
+                <filter string="Actifs" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Inactifs" name="inactive" domain="[('state', '=', 'inactive')]"/>
+                <filter string="Garçons" name="boys" domain="[('gender', '=', 'male')]"/>
+                <filter string="Filles" name="girls" domain="[('gender', '=', 'female')]"/>
+                <group string="Grouper par">
+                    <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
+                    <filter string="Statut" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Sexe" name="group_gender" context="{'group_by': 'gender'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_school_student" model="ir.actions.act_window">
+        <field name="name">Élèves</field>
+        <field name="res_model">school.student</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_school_student_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun élève enregistré
+            </p>
+            <p>Cliquez sur <b>Nouveau</b> pour ajouter un élève.</p>
+        </field>
+    </record>
+</odoo>

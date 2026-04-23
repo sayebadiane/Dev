@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_school_absence_form" model="ir.ui.view">
+        <field name="name">school.absence.form</field>
+        <field name="model">school.absence</field>
+        <field name="arch" type="xml">
+            <form string="Présence / Absence">
+                <sheet>
+                    <group>
+                        <group string="Élève">
+                            <field name="student_id"/>
+                            <field name="class_id" readonly="1"/>
+                        </group>
+                        <group string="Présence">
+                            <field name="date"/>
+                            <field name="is_present" widget="boolean_toggle"/>
+                            <field name="justified" readonly="1" invisible="is_present"/>
+                        </group>
+                    </group>
+                    <group string="Motif d'absence" invisible="is_present">
+                        <field name="reason" nolabel="1"/>
+                        <field name="note" placeholder="Détails..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_school_absence_list" model="ir.ui.view">
+        <field name="name">school.absence.list</field>
+        <field name="model">school.absence</field>
+        <field name="arch" type="xml">
+            <list string="Présences / Absences" editable="top"
+                  decoration-danger="not is_present and not justified"
+                  decoration-warning="not is_present and justified"
+                  decoration-success="is_present">
+                <field name="date"/>
+                <field name="student_id"/>
+                <field name="class_id" readonly="1"/>
+                <field name="is_present" widget="boolean_toggle"/>
+                <field name="reason" optional="show"/>
+                <field name="justified" readonly="1" optional="show"/>
+                <field name="note" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_school_absence_search" model="ir.ui.view">
+        <field name="name">school.absence.search</field>
+        <field name="model">school.absence</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher présences">
+                <field name="student_id"/>
+                <field name="class_id"/>
+                <field name="date"/>
+                <filter string="Absents" name="absent" domain="[('is_present', '=', False)]"/>
+                <filter string="Présents" name="present" domain="[('is_present', '=', True)]"/>
+                <filter string="Non justifiés" name="unjustified"
+                        domain="[('is_present', '=', False), ('justified', '=', False)]"/>
+                <filter string="Aujourd'hui" name="today"
+                        domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group string="Grouper par">
+                    <filter string="Élève" name="group_student" context="{'group_by': 'student_id'}"/>
+                    <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date:week'}"/>
+                    <filter string="Motif" name="group_reason" context="{'group_by': 'reason'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vue par classe pour saisir les présences du jour -->
+    <record id="view_school_absence_list_by_class" model="ir.ui.view">
+        <field name="name">school.absence.list.by.class</field>
+        <field name="model">school.absence</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list string="Feuille de présence" editable="1"
+                  decoration-danger="not is_present">
+                <field name="date" readonly="1"/>
+                <field name="student_id"/>
+                <field name="is_present" widget="boolean_toggle"/>
+                <field name="reason" invisible="is_present"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_school_absence" model="ir.actions.act_window">
+        <field name="name">Présences / Absences</field>
+        <field name="res_model">school.absence</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_school_absence_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun enregistrement de présence
+            </p>
+        </field>
+    </record>
+</odoo>

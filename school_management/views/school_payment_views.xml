@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_school_payment_form" model="ir.ui.view">
+        <field name="name">school.payment.form</field>
+        <field name="model">school.payment</field>
+        <field name="arch" type="xml">
+            <form string="Paiement de scolarité">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="unpaid,partial,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Élève">
+                            <field name="student_id"/>
+                            <field name="class_id" readonly="1"/>
+                        </group>
+                        <group string="Période">
+                            <field name="month"/>
+                            <field name="year"/>
+                            <field name="period" readonly="1"/>
+                            <field name="due_date"/>
+                        </group>
+                    </group>
+                    <group string="Montants">
+                        <group>
+                            <field name="amount_due"/>
+                            <field name="amount_paid" readonly="1"/>
+                            <field name="amount_remaining" readonly="1"
+                                   decoration-danger="amount_remaining &gt; 0"/>
+                        </group>
+                    </group>
+                    <div class="mt8 mb8">
+                        <button name="action_add_payment" type="object"
+                                string="Enregistrer un versement" class="btn btn-primary"
+                                invisible="state == 'paid'"/>
+                        <button name="action_print_receipt" type="object"
+                                string="Imprimer reçu" class="btn btn-secondary ml8"
+                                invisible="amount_paid == 0"/>
+                    </div>
+                    <notebook>
+                        <page string="Versements effectués">
+                            <field name="line_ids">
+                                <list string="Versements" editable="bottom">
+                                    <field name="date"/>
+                                    <field name="amount"/>
+                                    <field name="payment_method"/>
+                                    <field name="received_by"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="note" placeholder="Observations..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_school_payment_list" model="ir.ui.view">
+        <field name="name">school.payment.list</field>
+        <field name="model">school.payment</field>
+        <field name="arch" type="xml">
+            <list string="Paiements"
+                  decoration-danger="state == 'unpaid'"
+                  decoration-warning="state == 'partial'"
+                  decoration-success="state == 'paid'">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="class_id"/>
+                <field name="period"/>
+                <field name="amount_due"/>
+                <field name="amount_paid"/>
+                <field name="amount_remaining"/>
+                <field name="due_date"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'unpaid'"
+                       decoration-warning="state == 'partial'"
+                       decoration-success="state == 'paid'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_school_payment_search" model="ir.ui.view">
+        <field name="name">school.payment.search</field>
+        <field name="model">school.payment</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un paiement">
+                <field name="student_id"/>
+                <field name="class_id"/>
+                <field name="name"/>
+                <filter string="Impayés" name="unpaid" domain="[('state', '=', 'unpaid')]"/>
+                <filter string="Partiels" name="partial" domain="[('state', '=', 'partial')]"/>
+                <filter string="Payés" name="paid" domain="[('state', '=', 'paid')]"/>
+                <filter string="Mois courant" name="current_month"
+                        domain="[('year', '=', str(context_today().year)), ('month', '=', '%02d' % context_today().month)]"/>
+                <group string="Grouper par">
+                    <filter string="Élève" name="group_student" context="{'group_by': 'student_id'}"/>
+                    <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
+                    <filter string="Période" name="group_period" context="{'group_by': 'period'}"/>
+                    <filter string="Statut" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_school_payment" model="ir.actions.act_window">
+        <field name="name">Paiements de scolarité</field>
+        <field name="res_model">school.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_school_payment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun paiement enregistré
+            </p>
+        </field>
+    </record>
+
+    <record id="action_school_payment_unpaid" model="ir.actions.act_window">
+        <field name="name">Impayés</field>
+        <field name="res_model">school.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ['unpaid', 'partial'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun impayé !</p>
+        </field>
+    </record>
+</odoo>

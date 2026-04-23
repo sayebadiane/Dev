@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_school_bulletin_form" model="ir.ui.view">
+        <field name="name">school.bulletin.form</field>
+        <field name="model">school.bulletin</field>
+        <field name="arch" type="xml">
+            <form string="Bulletin scolaire">
+                <header>
+                    <button name="action_validate" string="Valider" type="object"
+                            class="btn-primary" invisible="state == 'validated'"/>
+                    <button name="action_draft" string="Remettre en brouillon" type="object"
+                            invisible="state == 'draft'"/>
+                    <button name="action_print_bulletin" string="Imprimer bulletin" type="object"
+                            class="btn-secondary" invisible="state == 'draft'"/>
+                    <button name="action_compute_ranks" string="Recalculer les rangs" type="object"
+                            class="btn-info" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Élève">
+                            <field name="student_id"/>
+                            <field name="class_id" readonly="1"/>
+                        </group>
+                        <group string="Période">
+                            <field name="school_year"/>
+                            <field name="trimester"/>
+                        </group>
+                    </group>
+                    <group string="Résultats">
+                        <group>
+                            <field name="average" readonly="1"/>
+                            <field name="appreciation" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="rank"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes par matière">
+                            <field name="line_ids">
+                                <list string="Notes" editable="bottom">
+                                    <field name="subject_id"/>
+                                    <field name="note"/>
+                                    <field name="coefficient"/>
+                                    <field name="weighted_note" readonly="1"/>
+                                    <field name="teacher_comment"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Appréciation du conseil">
+                            <field name="teacher_comment" placeholder="Appréciation générale..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_school_bulletin_list" model="ir.ui.view">
+        <field name="name">school.bulletin.list</field>
+        <field name="model">school.bulletin</field>
+        <field name="arch" type="xml">
+            <list string="Bulletins scolaires"
+                  decoration-success="state == 'validated'"
+                  decoration-muted="state == 'draft'">
+                <field name="student_id"/>
+                <field name="class_id"/>
+                <field name="school_year"/>
+                <field name="trimester"/>
+                <field name="average"/>
+                <field name="rank"/>
+                <field name="appreciation"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'validated'"
+                       decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_school_bulletin_search" model="ir.ui.view">
+        <field name="name">school.bulletin.search</field>
+        <field name="model">school.bulletin</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un bulletin">
+                <field name="student_id"/>
+                <field name="class_id"/>
+                <field name="school_year"/>
+                <filter string="1er Trimestre" name="tri1" domain="[('trimester', '=', '1')]"/>
+                <filter string="2ème Trimestre" name="tri2" domain="[('trimester', '=', '2')]"/>
+                <filter string="3ème Trimestre" name="tri3" domain="[('trimester', '=', '3')]"/>
+                <filter string="Validés" name="validated" domain="[('state', '=', 'validated')]"/>
+                <filter string="Brouillons" name="draft" domain="[('state', '=', 'draft')]"/>
+                <group string="Grouper par">
+                    <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
+                    <filter string="Trimestre" name="group_trim" context="{'group_by': 'trimester'}"/>
+                    <filter string="Année" name="group_year" context="{'group_by': 'school_year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_school_bulletin" model="ir.actions.act_window">
+        <field name="name">Bulletins scolaires</field>
+        <field name="res_model">school.bulletin</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_school_bulletin_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun bulletin enregistré
+            </p>
+        </field>
+    </record>
+</odoo>

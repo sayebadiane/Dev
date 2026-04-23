@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_bulletin" model="ir.actions.report">
+        <field name="name">Bulletin scolaire</field>
+        <field name="model">school.bulletin</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">school_management.report_bulletin_template</field>
+        <field name="report_file">school_management.report_bulletin_template</field>
+        <field name="binding_model_id" ref="model_school_bulletin"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_bulletin_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- En-tête -->
+                        <div class="row mb-4" style="border-bottom: 3px solid #2c3e50; padding-bottom: 12px;">
+                            <div class="col-6">
+                                <h2 style="color: #2c3e50;">BULLETIN SCOLAIRE</h2>
+                                <p style="font-size: 14px;">
+                                    <strong>Trimestre :</strong>
+                                    <t t-if="doc.trimester == '1'">1er Trimestre</t>
+                                    <t t-elif="doc.trimester == '2'">2ème Trimestre</t>
+                                    <t t-else="">3ème Trimestre</t>
+                                    — <t t-esc="doc.school_year"/>
+                                </p>
+                            </div>
+                            <div class="col-6 text-right">
+                                <p>
+                                    <strong>Classe :</strong>
+                                    <t t-esc="doc.class_id.name or '-'"/>
+                                </p>
+                                <p>
+                                    <strong>Effectif :</strong>
+                                    <t t-esc="doc.class_id.student_count or 0"/>
+                                </p>
+                                <p>
+                                    <strong>Prof. principal :</strong>
+                                    <t t-esc="doc.class_id.teacher_id.name or '-'"/>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Informations élève -->
+                        <div class="row mb-3"
+                             style="background: #ecf0f1; padding: 10px; border-radius: 4px;">
+                            <div class="col-4">
+                                <strong>Élève :</strong>
+                                <t t-esc="doc.student_id.full_name"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Matricule :</strong>
+                                <t t-esc="doc.student_id.registration_number"/>
+                            </div>
+                            <div class="col-2">
+                                <strong>Sexe :</strong>
+                                <t t-if="doc.student_id.gender == 'male'">M</t>
+                                <t t-elif="doc.student_id.gender == 'female'">F</t>
+                            </div>
+                            <div class="col-3">
+                                <strong>Date de naissance :</strong>
+                                <span t-field="doc.student_id.date_of_birth"
+                                      t-options='{"format": "dd/MM/yyyy"}'/>
+                            </div>
+                        </div>
+
+                        <!-- Tableau des notes -->
+                        <table class="table table-bordered table-sm" style="font-size: 11px;">
+                            <thead style="background-color: #2c3e50; color: white;">
+                                <tr>
+                                    <th style="width: 35%;">Matière</th>
+                                    <th class="text-center" style="width: 12%;">Coeff.</th>
+                                    <th class="text-center" style="width: 13%;">Note /20</th>
+                                    <th class="text-center" style="width: 15%;">Note pondérée</th>
+                                    <th style="width: 25%;">Appréciation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.line_ids" t-as="line">
+                                    <tr>
+                                        <td><t t-esc="line.subject_id.name"/></td>
+                                        <td class="text-center">
+                                            <t t-esc="'%.1f' % line.coefficient"/>
+                                        </td>
+                                        <td class="text-center"
+                                            t-attf-style="color: #{'c0392b' if line.note &lt; 10 else '27ae60'}; font-weight: bold;">
+                                            <t t-esc="'%.2f' % line.note"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <t t-esc="'%.2f' % line.weighted_note"/>
+                                        </td>
+                                        <td><t t-esc="line.teacher_comment or ''"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot style="background-color: #ecf0f1; font-weight: bold;">
+                                <tr>
+                                    <td colspan="2">MOYENNE GÉNÉRALE</td>
+                                    <td class="text-center"
+                                        t-attf-style="color: #{'c0392b' if doc.average &lt; 10 else '27ae60'}; font-size: 14px; font-weight: bold;">
+                                        <t t-esc="'%.2f' % doc.average"/> / 20
+                                    </td>
+                                    <td class="text-center">
+                                        Rang : <t t-esc="doc.rank or '-'"/> /
+                                        <t t-esc="doc.class_id.student_count or '?'"/>
+                                    </td>
+                                    <td>
+                                        <span t-attf-style="color: #{'c0392b' if doc.average &lt; 10 else '27ae60'};">
+                                            <t t-esc="doc.appreciation"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!-- Appréciation du conseil -->
+                        <div class="mt-3 p-3" style="border: 1px solid #bdc3c7; border-radius: 4px; min-height: 60px;">
+                            <strong>Appréciation du conseil de classe :</strong>
+                            <p><t t-esc="doc.teacher_comment or '...'"/></p>
+                        </div>
+
+                        <!-- Signatures -->
+                        <div class="row mt-4">
+                            <div class="col-4 text-center">
+                                <p><strong>Le Directeur</strong></p>
+                                <br/><br/>
+                                <p style="border-top: 1px solid #333;">Signature et cachet</p>
+                            </div>
+                            <div class="col-4 text-center">
+                                <p><strong>Prof. Principal</strong></p>
+                                <br/><br/>
+                                <p style="border-top: 1px solid #333;">Signature</p>
+                            </div>
+                            <div class="col-4 text-center">
+                                <p><strong>Parents / Tuteurs</strong></p>
+                                <br/><br/>
+                                <p style="border-top: 1px solid #333;">Lu et approuvé</p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

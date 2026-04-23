@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_school_dashboard_form" model="ir.ui.view">
+        <field name="name">school.dashboard.form</field>
+        <field name="model">school.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Tableau de bord" create="false" edit="false">
+                <sheet>
+                    <div class="school_dashboard_header">
+                        <h2>Tableau de bord — <field name="current_month" readonly="1"/></h2>
+                    </div>
+
+                    <!-- Ligne 1 : Élèves, classes, présences, bulletins -->
+                    <div class="row mt16">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_blue">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-users fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value">
+                                        <field name="total_students" readonly="1"/>
+                                    </div>
+                                    <div class="school_stat_label">Élèves actifs</div>
+                                    <div class="school_stat_sub">
+                                        <field name="total_boys" readonly="1"/> G /
+                                        <field name="total_girls" readonly="1"/> F
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_green">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-building fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value">
+                                        <field name="total_classes" readonly="1"/>
+                                    </div>
+                                    <div class="school_stat_label">Classes actives</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_orange">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-calendar-check-o fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value">
+                                        <field name="attendance_rate" readonly="1"/>%
+                                    </div>
+                                    <div class="school_stat_label">Taux de présence</div>
+                                    <div class="school_stat_sub">
+                                        <field name="total_absences_month" readonly="1"/> absences ce mois
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_purple">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-file-text fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value">
+                                        <field name="total_bulletins" readonly="1"/>
+                                    </div>
+                                    <div class="school_stat_label">Bulletins générés</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ligne 2 : Paiements du mois -->
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <h4 class="school_section_title">
+                                <i class="fa fa-money"/> Paiements — <field name="current_month" readonly="1"/>
+                            </h4>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_indigo">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-arrow-down fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value small">
+                                        <field name="monthly_due" readonly="1"/> FCFA
+                                    </div>
+                                    <div class="school_stat_label">Montant attendu</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_teal">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-check-circle fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value small">
+                                        <field name="monthly_paid" readonly="1"/> FCFA
+                                    </div>
+                                    <div class="school_stat_label">Encaissé</div>
+                                    <div class="school_stat_sub">
+                                        <field name="paid_count" readonly="1"/> factures payées
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_yellow">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-clock-o fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value small">
+                                        <field name="partial_count" readonly="1"/>
+                                    </div>
+                                    <div class="school_stat_label">Paiements partiels</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="school_stat_card school_stat_red">
+                                <div class="school_stat_icon">
+                                    <i class="fa fa-exclamation-circle fa-2x"/>
+                                </div>
+                                <div class="school_stat_content">
+                                    <div class="school_stat_value small">
+                                        <field name="monthly_remaining" readonly="1"/> FCFA
+                                    </div>
+                                    <div class="school_stat_label">Impayés</div>
+                                    <div class="school_stat_sub">
+                                        <field name="unpaid_count" readonly="1"/> dossiers
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accès rapides -->
+                    <div class="row mt24">
+                        <div class="col-12">
+                            <h4 class="school_section_title">
+                                <i class="fa fa-bolt"/> Accès rapides
+                            </h4>
+                            <div class="school_quick_links">
+                                <button type="action"
+                                        name="%(school_management.action_school_student)d"
+                                        class="btn btn-primary school_quick_btn">
+                                    <i class="fa fa-user-plus"/> Élèves
+                                </button>
+                                <button type="action"
+                                        name="%(school_management.action_school_payment)d"
+                                        class="btn btn-success school_quick_btn">
+                                    <i class="fa fa-money"/> Paiements
+                                </button>
+                                <button type="action"
+                                        name="%(school_management.action_school_absence)d"
+                                        class="btn btn-warning school_quick_btn">
+                                    <i class="fa fa-calendar"/> Présences
+                                </button>
+                                <button type="action"
+                                        name="%(school_management.action_school_bulletin)d"
+                                        class="btn btn-info school_quick_btn">
+                                    <i class="fa fa-file-text"/> Bulletins
+                                </button>
+                                <button type="action"
+                                        name="%(school_management.action_school_payment_unpaid)d"
+                                        class="btn btn-danger school_quick_btn">
+                                    <i class="fa fa-exclamation-triangle"/> Impayés
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_school_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord</field>
+        <field name="res_model">school.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'create': False}</field>
+    </record>
+</odoo>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu principal -->
+    <menuitem id="menu_school_root"
+              name="École"
+              sequence="10"
+              web_icon="school_management,static/description/icon.png"/>
+
+    <!-- Tableau de bord -->
+    <menuitem id="menu_school_dashboard"
+              name="Tableau de bord"
+              parent="menu_school_root"
+              action="action_school_dashboard"
+              sequence="1"/>
+
+    <!-- Élèves -->
+    <menuitem id="menu_school_students"
+              name="Élèves"
+              parent="menu_school_root"
+              action="action_school_student"
+              sequence="10"/>
+
+    <!-- Classes -->
+    <menuitem id="menu_school_classes"
+              name="Classes"
+              parent="menu_school_root"
+              action="action_school_class"
+              sequence="20"/>
+
+    <!-- Paiements -->
+    <menuitem id="menu_school_payments_root"
+              name="Paiements"
+              parent="menu_school_root"
+              sequence="30"/>
+
+    <menuitem id="menu_school_payments"
+              name="Tous les paiements"
+              parent="menu_school_payments_root"
+              action="action_school_payment"
+              sequence="1"/>
+
+    <menuitem id="menu_school_unpaid"
+              name="Impayés"
+              parent="menu_school_payments_root"
+              action="action_school_payment_unpaid"
+              sequence="2"/>
+
+    <!-- Présences -->
+    <menuitem id="menu_school_absences"
+              name="Présences"
+              parent="menu_school_root"
+              action="action_school_absence"
+              sequence="40"/>
+
+    <!-- Bulletins -->
+    <menuitem id="menu_school_bulletins"
+              name="Bulletins"
+              parent="menu_school_root"
+              action="action_school_bulletin"
+              sequence="50"/>
+
+    <!-- Parents -->
+    <menuitem id="menu_school_parents"
+              name="Parents"
+              parent="menu_school_root"
+              action="action_school_parent"
+              sequence="60"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_school_config"
+              name="Configuration"
+              parent="menu_school_root"
+              sequence="100"
+              groups="school_management.group_school_manager"/>
+
+    <menuitem id="menu_school_subjects"
+              name="Matières"
+              parent="menu_school_config"
+              action="action_school_subject"
+              sequence="1"/>
+</odoo>
