@@ -82,6 +82,11 @@ class SchoolStudent(models.Model):
                 vals['registration_number'] = self.env['ir.sequence'].next_by_code('school.student') or '/'
         return super().create(vals_list)
 
+    def copy(self, default=None):
+        default = dict(default or {})
+        default['registration_number'] = '/'
+        return super().copy(default)
+
     def action_activate(self):
         self.write({'state': 'active'})
 
