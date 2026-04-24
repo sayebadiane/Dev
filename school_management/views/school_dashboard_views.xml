@@ -184,7 +184,7 @@
         <field name="name">Tableau de bord</field>
         <field name="res_model">school.dashboard</field>
         <field name="view_mode">form</field>
-        <field name="target">inline</field>
+        <field name="target">main</field>
         <field name="context">{'create': False}</field>
     </record>
 </odoo>

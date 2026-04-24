@@ -9,12 +9,7 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_students" type="object"
                                 class="oe_stat_button" icon="fa-users">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="student_count"/>
-                                </span>
-                                <span class="o_stat_text">Enfants</span>
-                            </div>
+                            <field name="student_count" widget="statinfo" string="Enfants"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -84,7 +79,7 @@
                 <filter string="Pères" name="fathers" domain="[('relationship', '=', 'father')]"/>
                 <filter string="Mères" name="mothers" domain="[('relationship', '=', 'mother')]"/>
                 <filter string="Tuteurs" name="guardians" domain="[('relationship', '=', 'guardian')]"/>
-                <group string="Grouper par">
+                <group name="group_by">
                     <filter string="Lien de parenté" name="group_rel"
                             context="{'group_by': 'relationship'}"/>
                 </group>

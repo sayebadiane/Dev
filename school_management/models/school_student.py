@@ -47,8 +47,8 @@ class SchoolStudent(models.Model):
         for rec in self:
             rec.full_name = f"{rec.firstname} {rec.name}" if rec.firstname else (rec.name or '')
 
+    @api.depends('name', 'firstname')
     def _compute_display_name(self):
-        """Odoo 17+ : remplace name_get() — affiche Prénom NOM dans les Many2one."""
         for rec in self:
             rec.display_name = f"{rec.firstname} {rec.name}" if rec.firstname else (rec.name or '')
 

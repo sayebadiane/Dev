@@ -98,7 +98,7 @@
                 <filter string="3ème Trimestre" name="tri3" domain="[('trimester', '=', '3')]"/>
                 <filter string="Validés" name="validated" domain="[('state', '=', 'validated')]"/>
                 <filter string="Brouillons" name="draft" domain="[('state', '=', 'draft')]"/>
-                <group string="Grouper par">
+                <group name="group_by">
                     <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
                     <filter string="Trimestre" name="group_trim" context="{'group_by': 'trimester'}"/>
                     <filter string="Année" name="group_year" context="{'group_by': 'school_year'}"/>

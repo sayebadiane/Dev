@@ -9,10 +9,7 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_students" type="object"
                                 class="oe_stat_button" icon="fa-users">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value"><field name="student_count"/></span>
-                                <span class="o_stat_text">Élèves</span>
-                            </div>
+                            <field name="student_count" widget="statinfo" string="Élèves"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -83,7 +80,7 @@
                 <filter string="Actives" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Année courante" name="current_year"
                         domain="[('school_year', '=', '2024-2025')]"/>
-                <group string="Grouper par">
+                <group name="group_by">
                     <filter string="Niveau" name="group_level" context="{'group_by': 'level'}"/>
                     <filter string="Année scolaire" name="group_year" context="{'group_by': 'school_year'}"/>
                 </group>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+
+    <!-- ═══════════════════════════════════════════════
+         ÉTAPE 1 — CRÉER LES CLASSES
+         ═══════════════════════════════════════════════ -->
+
+    <record id="demo_class_6eme_a" model="school.class">
+        <field name="name">6ème A</field>
+        <field name="level">6eme</field>
+        <field name="school_year">2024-2025</field>
+        <field name="room">Salle 101</field>
+        <field name="capacity">35</field>
+        <field name="monthly_fee">25000</field>
+    </record>
+
+    <record id="demo_class_cm2_a" model="school.class">
+        <field name="name">CM2 A</field>
+        <field name="level">cm2</field>
+        <field name="school_year">2024-2025</field>
+        <field name="room">Salle 201</field>
+        <field name="capacity">30</field>
+        <field name="monthly_fee">20000</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         ÉTAPE 2 — INSCRIRE LES ÉLÈVES
+         ═══════════════════════════════════════════════ -->
+
+    <record id="demo_student_aminata" model="school.student">
+        <field name="name">KONÉ</field>
+        <field name="firstname">Aminata</field>
+        <field name="date_of_birth">2012-03-15</field>
+        <field name="gender">female</field>
+        <field name="class_id" ref="demo_class_6eme_a"/>
+        <field name="phone">+225 07 00 11 22</field>
+        <field name="address">Abidjan, Cocody</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="demo_student_ibrahim" model="school.student">
+        <field name="name">DIALLO</field>
+        <field name="firstname">Ibrahim</field>
+        <field name="date_of_birth">2011-08-22</field>
+        <field name="gender">male</field>
+        <field name="class_id" ref="demo_class_6eme_a"/>
+        <field name="phone">+225 07 00 33 44</field>
+        <field name="address">Abidjan, Yopougon</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="demo_student_fatou" model="school.student">
+        <field name="name">TRAORÉ</field>
+        <field name="firstname">Fatou</field>
+        <field name="date_of_birth">2014-05-10</field>
+        <field name="gender">female</field>
+        <field name="class_id" ref="demo_class_cm2_a"/>
+        <field name="address">Abidjan, Plateau</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="demo_student_moussa" model="school.student">
+        <field name="name">COULIBALY</field>
+        <field name="firstname">Moussa</field>
+        <field name="date_of_birth">2013-11-30</field>
+        <field name="gender">male</field>
+        <field name="class_id" ref="demo_class_cm2_a"/>
+        <field name="state">active</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         ÉTAPE 3 — ENREGISTRER LES TUTEURS
+         et les lier aux élèves
+         ═══════════════════════════════════════════════ -->
+
+    <record id="demo_parent_mamadou" model="school.parent">
+        <field name="name">KONÉ</field>
+        <field name="firstname">Mamadou</field>
+        <field name="relationship">father</field>
+        <field name="phone">+225 05 00 11 22</field>
+        <field name="email">mamadou.kone@email.com</field>
+        <field name="profession">Ingénieur</field>
+        <field name="student_ids" eval="[(4, ref('demo_student_aminata'))]"/>
+    </record>
+
+    <record id="demo_parent_mariam" model="school.parent">
+        <field name="name">KONÉ</field>
+        <field name="firstname">Mariam</field>
+        <field name="relationship">mother</field>
+        <field name="phone">+225 05 00 55 66</field>
+        <field name="profession">Enseignante</field>
+        <field name="student_ids" eval="[(4, ref('demo_student_aminata'))]"/>
+    </record>
+
+    <record id="demo_parent_fatoumata" model="school.parent">
+        <field name="name">DIALLO</field>
+        <field name="firstname">Fatoumata</field>
+        <field name="relationship">mother</field>
+        <field name="phone">+225 05 00 33 44</field>
+        <field name="email">f.diallo@email.com</field>
+        <field name="profession">Commerçante</field>
+        <field name="student_ids" eval="[(4, ref('demo_student_ibrahim'))]"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         ÉTAPE 4 — GÉRER LES PAIEMENTS
+         3 situations : payé / partiel / impayé
+         ═══════════════════════════════════════════════ -->
+
+    <!-- Aminata Septembre : PAYÉ intégralement -->
+    <record id="demo_pay_aminata_sep" model="school.payment">
+        <field name="student_id" ref="demo_student_aminata"/>
+        <field name="month">09</field>
+        <field name="year">2024</field>
+        <field name="amount_due">25000</field>
+        <field name="due_date">2024-09-10</field>
+    </record>
+    <record id="demo_payline_aminata_sep" model="school.payment.line">
+        <field name="payment_id" ref="demo_pay_aminata_sep"/>
+        <field name="date">2024-09-05</field>
+        <field name="amount">25000</field>
+        <field name="payment_method">cash</field>
+    </record>
+
+    <!-- Aminata Octobre : PARTIEL (15 000 sur 25 000) -->
+    <record id="demo_pay_aminata_oct" model="school.payment">
+        <field name="student_id" ref="demo_student_aminata"/>
+        <field name="month">10</field>
+        <field name="year">2024</field>
+        <field name="amount_due">25000</field>
+        <field name="due_date">2024-10-10</field>
+    </record>
+    <record id="demo_payline_aminata_oct" model="school.payment.line">
+        <field name="payment_id" ref="demo_pay_aminata_oct"/>
+        <field name="date">2024-10-07</field>
+        <field name="amount">15000</field>
+        <field name="payment_method">mobile</field>
+    </record>
+
+    <!-- Ibrahim Septembre : IMPAYÉ (aucun versement) -->
+    <record id="demo_pay_ibrahim_sep" model="school.payment">
+        <field name="student_id" ref="demo_student_ibrahim"/>
+        <field name="month">09</field>
+        <field name="year">2024</field>
+        <field name="amount_due">25000</field>
+        <field name="due_date">2024-09-10</field>
+    </record>
+
+    <!-- Ibrahim Octobre : PAYÉ via virement -->
+    <record id="demo_pay_ibrahim_oct" model="school.payment">
+        <field name="student_id" ref="demo_student_ibrahim"/>
+        <field name="month">10</field>
+        <field name="year">2024</field>
+        <field name="amount_due">25000</field>
+        <field name="due_date">2024-10-10</field>
+    </record>
+    <record id="demo_payline_ibrahim_oct" model="school.payment.line">
+        <field name="payment_id" ref="demo_pay_ibrahim_oct"/>
+        <field name="date">2024-10-02</field>
+        <field name="amount">25000</field>
+        <field name="payment_method">transfer</field>
+    </record>
+
+    <!-- Fatou Septembre : PAYÉ -->
+    <record id="demo_pay_fatou_sep" model="school.payment">
+        <field name="student_id" ref="demo_student_fatou"/>
+        <field name="month">09</field>
+        <field name="year">2024</field>
+        <field name="amount_due">20000</field>
+    </record>
+    <record id="demo_payline_fatou_sep" model="school.payment.line">
+        <field name="payment_id" ref="demo_pay_fatou_sep"/>
+        <field name="date">2024-09-03</field>
+        <field name="amount">20000</field>
+        <field name="payment_method">cash</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         ÉTAPE 5 — ENREGISTRER LES PRÉSENCES / ABSENCES
+         ═══════════════════════════════════════════════ -->
+
+    <!-- 14 octobre : Ibrahim absent (malade) -->
+    <record id="demo_abs_ibrahim_1" model="school.absence">
+        <field name="student_id" ref="demo_student_ibrahim"/>
+        <field name="date">2024-10-14</field>
+        <field name="is_present" eval="False"/>
+        <field name="reason">sick</field>
+        <field name="note">Certificat médical fourni</field>
+    </record>
+
+    <!-- 14 octobre : Aminata présente -->
+    <record id="demo_abs_aminata_1" model="school.absence">
+        <field name="student_id" ref="demo_student_aminata"/>
+        <field name="date">2024-10-14</field>
+        <field name="is_present" eval="True"/>
+    </record>
+
+    <!-- 21 octobre : Ibrahim absent (injustifié) -->
+    <record id="demo_abs_ibrahim_2" model="school.absence">
+        <field name="student_id" ref="demo_student_ibrahim"/>
+        <field name="date">2024-10-21</field>
+        <field name="is_present" eval="False"/>
+        <field name="reason">unjustified</field>
+    </record>
+
+    <!-- 21 octobre : Aminata présente -->
+    <record id="demo_abs_aminata_2" model="school.absence">
+        <field name="student_id" ref="demo_student_aminata"/>
+        <field name="date">2024-10-21</field>
+        <field name="is_present" eval="True"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         ÉTAPE 6 — CRÉER LES BULLETINS (1er trimestre)
+         ═══════════════════════════════════════════════ -->
+
+    <!-- Bulletin Aminata — 1er trimestre (Bien) -->
+    <record id="demo_bulletin_aminata_t1" model="school.bulletin">
+        <field name="student_id" ref="demo_student_aminata"/>
+        <field name="school_year">2024-2025</field>
+        <field name="trimester">1</field>
+        <field name="rank">1</field>
+        <field name="teacher_comment">Élève sérieuse, continue ainsi !</field>
+    </record>
+    <record id="demo_bline_aminata_math" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_aminata_t1"/>
+        <field name="subject_id" ref="subject_math"/>
+        <field name="note">14.5</field>
+        <field name="coefficient">3.0</field>
+    </record>
+    <record id="demo_bline_aminata_fr" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_aminata_t1"/>
+        <field name="subject_id" ref="subject_french"/>
+        <field name="note">16.0</field>
+        <field name="coefficient">3.0</field>
+    </record>
+    <record id="demo_bline_aminata_sci" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_aminata_t1"/>
+        <field name="subject_id" ref="subject_sciences"/>
+        <field name="note">13.5</field>
+        <field name="coefficient">2.0</field>
+    </record>
+    <record id="demo_bline_aminata_hg" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_aminata_t1"/>
+        <field name="subject_id" ref="subject_history"/>
+        <field name="note">15.0</field>
+        <field name="coefficient">2.0</field>
+    </record>
+    <record id="demo_bline_aminata_ang" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_aminata_t1"/>
+        <field name="subject_id" ref="subject_english"/>
+        <field name="note">12.0</field>
+        <field name="coefficient">2.0</field>
+    </record>
+
+    <!-- Bulletin Ibrahim — 1er trimestre (Assez bien) -->
+    <record id="demo_bulletin_ibrahim_t1" model="school.bulletin">
+        <field name="student_id" ref="demo_student_ibrahim"/>
+        <field name="school_year">2024-2025</field>
+        <field name="trimester">1</field>
+        <field name="rank">2</field>
+        <field name="teacher_comment">Des efforts à fournir en mathématiques.</field>
+    </record>
+    <record id="demo_bline_ibrahim_math" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_ibrahim_t1"/>
+        <field name="subject_id" ref="subject_math"/>
+        <field name="note">9.0</field>
+        <field name="coefficient">3.0</field>
+    </record>
+    <record id="demo_bline_ibrahim_fr" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_ibrahim_t1"/>
+        <field name="subject_id" ref="subject_french"/>
+        <field name="note">11.5</field>
+        <field name="coefficient">3.0</field>
+    </record>
+    <record id="demo_bline_ibrahim_sci" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_ibrahim_t1"/>
+        <field name="subject_id" ref="subject_sciences"/>
+        <field name="note">10.0</field>
+        <field name="coefficient">2.0</field>
+    </record>
+    <record id="demo_bline_ibrahim_hg" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_ibrahim_t1"/>
+        <field name="subject_id" ref="subject_history"/>
+        <field name="note">12.0</field>
+        <field name="coefficient">2.0</field>
+    </record>
+    <record id="demo_bline_ibrahim_ang" model="school.bulletin.line">
+        <field name="bulletin_id" ref="demo_bulletin_ibrahim_t1"/>
+        <field name="subject_id" ref="subject_english"/>
+        <field name="note">11.0</field>
+        <field name="coefficient">2.0</field>
+    </record>
+
+</data>
+</odoo>

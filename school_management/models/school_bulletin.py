@@ -25,7 +25,6 @@ class SchoolBulletin(models.Model):
         ('draft', 'Brouillon'),
         ('validated', 'Validé'),
     ], string='État', default='draft', tracking=True)
-    display_name = fields.Char(compute='_compute_display_name')
 
     _sql_constraints = [
         ('unique_student_trimester_year',
@@ -33,7 +32,7 @@ class SchoolBulletin(models.Model):
          'Un seul bulletin par élève, trimestre et année scolaire.'),
     ]
 
-    @api.depends('student_id', 'trimester', 'school_year')
+    @api.depends('student_id', 'trimester', 'school_year', 'student_id.name', 'student_id.firstname')
     def _compute_display_name(self):
         trimester_labels = {'1': '1er Trim', '2': '2ème Trim', '3': '3ème Trim'}
         for rec in self:

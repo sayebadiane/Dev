@@ -59,7 +59,7 @@
                         domain="[('is_present', '=', False), ('justified', '=', False)]"/>
                 <filter string="Aujourd'hui" name="today"
                         domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                <group string="Grouper par">
+                <group name="group_by">
                     <filter string="Élève" name="group_student" context="{'group_by': 'student_id'}"/>
                     <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
                     <filter string="Date" name="group_date" context="{'group_by': 'date:week'}"/>
@@ -75,7 +75,7 @@
         <field name="model">school.absence</field>
         <field name="priority">20</field>
         <field name="arch" type="xml">
-            <list string="Feuille de présence" editable="1"
+            <list string="Feuille de présence" editable="bottom"
                   decoration-danger="not is_present">
                 <field name="date" readonly="1"/>
                 <field name="student_id"/>

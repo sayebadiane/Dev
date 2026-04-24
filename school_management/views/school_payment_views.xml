@@ -104,7 +104,7 @@
                 <filter string="Payés" name="paid" domain="[('state', '=', 'paid')]"/>
                 <filter string="Mois courant" name="current_month"
                         domain="[('year', '=', str(context_today().year)), ('month', '=', '%02d' % context_today().month)]"/>
-                <group string="Grouper par">
+                <group name="group_by">
                     <filter string="Élève" name="group_student" context="{'group_by': 'student_id'}"/>
                     <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
                     <filter string="Période" name="group_period" context="{'group_by': 'period'}"/>

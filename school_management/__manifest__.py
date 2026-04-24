@@ -40,8 +40,12 @@
             'school_management/static/src/css/school_dashboard.css',
         ],
     },
+    'demo': [
+        'demo/demo_data.xml',
+    ],
     'installable': True,
     'application': True,
     'auto_install': False,
     'license': 'LGPL-3',
+    'post_init_hook': 'post_init_hook',
 }

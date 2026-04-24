@@ -28,6 +28,7 @@ class SchoolParent(models.Model):
     )
     student_count = fields.Integer('Nb enfants', compute='_compute_student_count')
 
+    @api.depends('name', 'firstname')
     def _compute_display_name(self):
         for rec in self:
             rec.display_name = f"{rec.firstname} {rec.name}" if rec.firstname else (rec.name or '')

@@ -4,6 +4,7 @@
     <menuitem id="menu_school_root"
               name="École"
               sequence="10"
+              groups="school_management.group_school_teacher"
               web_icon="school_management,static/description/icon.png"/>
 
     <!-- Tableau de bord -->

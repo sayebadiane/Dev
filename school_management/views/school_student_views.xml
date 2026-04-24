@@ -18,31 +18,16 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_payments" type="object"
-                                class="oe_stat_button" icon="fa-money">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="payment_count"/>
-                                </span>
-                                <span class="o_stat_text">Paiements</span>
-                            </div>
+                                class="oe_stat_button" icon="fa-credit-card">
+                            <field name="payment_count" widget="statinfo" string="Paiements"/>
                         </button>
                         <button name="action_view_absences" type="object"
                                 class="oe_stat_button" icon="fa-calendar-times-o">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="absence_count"/>
-                                </span>
-                                <span class="o_stat_text">Absences</span>
-                            </div>
+                            <field name="absence_count" widget="statinfo" string="Absences"/>
                         </button>
                         <button name="action_view_bulletins" type="object"
                                 class="oe_stat_button" icon="fa-file-text">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="bulletin_count"/>
-                                </span>
-                                <span class="o_stat_text">Bulletins</span>
-                            </div>
+                            <field name="bulletin_count" widget="statinfo" string="Bulletins"/>
                         </button>
                     </div>
                     <field name="photo" widget="image" class="oe_avatar"/>
@@ -66,21 +51,12 @@
                         <group string="Scolarité">
                             <field name="class_id"/>
                             <field name="school_year" readonly="1"/>
-                            <field name="unpaid_amount" readonly="1"
-                                   decoration-danger="unpaid_amount &gt; 0"/>
+                            <field name="unpaid_amount" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Parents / Tuteurs" name="parents">
                             <field name="parent_ids" widget="many2many_tags"/>
-                            <field name="parent_ids">
-                                <list string="Parents">
-                                    <field name="full_name"/>
-                                    <field name="relationship"/>
-                                    <field name="phone"/>
-                                    <field name="email"/>
-                                </list>
-                            </field>
                         </page>
                         <page string="Paiements" name="payments">
                             <field name="payment_ids" readonly="1">
@@ -184,7 +160,7 @@
                             <div class="text-muted small">
                                 <field name="registration_number"/>
                             </div>
-                            <div t-if="record.unpaid_amount.raw_value > 0" class="text-danger small">
+                            <div t-if="record.unpaid_amount.value > 0" class="text-danger small">
                                 Impayé : <field name="unpaid_amount"/>
                             </div>
                         </main>
@@ -205,11 +181,11 @@
                 <field name="registration_number" string="Matricule"/>
                 <field name="class_id" string="Classe"/>
                 <field name="phone"/>
-                <filter string="Actifs" name="active" domain="[('state', '=', 'active')]"/>
-                <filter string="Inactifs" name="inactive" domain="[('state', '=', 'inactive')]"/>
+                <filter string="Actifs" name="active_students" domain="[('state', '=', 'active')]"/>
+                <filter string="Inactifs" name="inactive_students" domain="[('state', '=', 'inactive')]"/>
                 <filter string="Garçons" name="boys" domain="[('gender', '=', 'male')]"/>
                 <filter string="Filles" name="girls" domain="[('gender', '=', 'female')]"/>
-                <group string="Grouper par">
+                <group name="group_by">
                     <filter string="Classe" name="group_class" context="{'group_by': 'class_id'}"/>
                     <filter string="Statut" name="group_state" context="{'group_by': 'state'}"/>
                     <filter string="Sexe" name="group_gender" context="{'group_by': 'gender'}"/>
@@ -223,7 +199,7 @@
         <field name="res_model">school.student</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="view_school_student_search"/>
-        <field name="context">{'search_default_active': 1}</field>
+        <field name="context">{'search_default_active_students': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Aucun élève enregistré
