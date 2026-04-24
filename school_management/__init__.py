@@ -10,4 +10,4 @@ def post_init_hook(env):
             ('active', '=', True),
         ])
         if admin_users:
-            manager_group.write({'users': [(4, uid) for uid in admin_users.ids]})
+            admin_users.write({'group_ids': [(4, manager_group.id)]})
