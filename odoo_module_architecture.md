@@ -52,7 +52,7 @@ Fichier de déclaration du module. Obligatoire.
 ```python
 {
     'name': 'Mon Module',
-    'version': '17.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Description courte',
     'description': 'Description longue',
     'author': 'Mon Nom',
