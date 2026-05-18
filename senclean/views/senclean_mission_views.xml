@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_senclean_mission_form" model="ir.ui.view">
+        <field name="name">senclean.mission.form</field>
+        <field name="model">senclean.mission</field>
+        <field name="arch" type="xml">
+            <form string="Mission">
+                <header>
+                    <button name="action_confirm" string="Confirmer" type="object"
+                        invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_start" string="Démarrer" type="object"
+                        invisible="state != 'confirmed'" class="btn-primary"/>
+                    <button name="action_done" string="Terminer" type="object"
+                        invisible="state != 'in_progress'" class="btn-primary"/>
+                    <button name="action_cancel" string="Annuler" type="object"
+                        invisible="state == 'done'" class="btn-danger"/>
+                    <button name="action_reset_draft" string="Remettre en brouillon" type="object"
+                        invisible="state != 'cancelled'"
+                        groups="senclean.group_senclean_manager"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,confirmed,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Parties prenantes">
+                            <field name="client_id"/>
+                            <field name="provider_id"/>
+                            <field name="category_id"/>
+                            <field name="service_type"/>
+                        </group>
+                        <group string="Planification">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="duration_hours" readonly="1"/>
+                            <field name="address"/>
+                            <field name="city"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tarification &amp; Paiement" name="payment">
+                            <group>
+                                <group string="Tarification">
+                                    <field name="rate_type" readonly="1"/>
+                                    <field name="hourly_rate"
+                                        invisible="rate_type != 'hourly'"/>
+                                    <field name="amount_total" readonly="1" class="fw-bold"
+                                        invisible="rate_type == 'monthly'"/>
+                                    <field name="commission_rate"
+                                        invisible="rate_type == 'monthly'"/>
+                                    <field name="commission_amount" readonly="1"
+                                        invisible="rate_type == 'monthly'"/>
+                                    <field name="provider_amount" readonly="1"
+                                        invisible="rate_type == 'monthly'"/>
+                                    <field name="payment_frequency"/>
+                                </group>
+                                <group string="Paiement">
+                                    <field name="monthly_billing_id" readonly="1"
+                                        invisible="payment_frequency != 'monthly'"/>
+                                    <field name="payment_method"/>
+                                    <field name="payment_state"/>
+                                    <field name="payment_ref"
+                                        invisible="payment_state != 'paid'"/>
+                                    <field name="payment_date"
+                                        invisible="payment_state != 'paid'"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Instructions" name="instructions">
+                            <field name="instructions"
+                                placeholder="Instructions pour le prestataire..."/>
+                        </page>
+                        <page string="Évaluation" name="rating"
+                            invisible="state != 'done'">
+                            <group>
+                                <field name="rating" widget="priority"/>
+                                <field name="rating_comment" placeholder="Commentaire du client..."/>
+                                <field name="client_note" placeholder="Notes post-mission (client)..."/>
+                                <field name="provider_note" placeholder="Notes post-mission (prestataire)..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_senclean_mission_list" model="ir.ui.view">
+        <field name="name">senclean.mission.list</field>
+        <field name="model">senclean.mission</field>
+        <field name="arch" type="xml">
+            <list string="Missions"
+                decoration-success="state == 'done'"
+                decoration-info="state == 'in_progress'"
+                decoration-warning="state == 'confirmed'"
+                decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="provider_id"/>
+                <field name="category_id"/>
+                <field name="service_type"/>
+                <field name="date_start"/>
+                <field name="amount_total" string="Montant (FCFA)"/>
+                <field name="payment_frequency" string="Fréquence"/>
+                <field name="payment_method"/>
+                <field name="payment_state" widget="badge"
+                    decoration-success="payment_state == 'paid'"
+                    decoration-warning="payment_state == 'pending'"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'done'"
+                    decoration-info="state == 'in_progress'"
+                    decoration-warning="state == 'confirmed'"
+                    decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_senclean_mission_search" model="ir.ui.view">
+        <field name="name">senclean.mission.search</field>
+        <field name="model">senclean.mission</field>
+        <field name="arch" type="xml">
+            <search string="Recherche missions">
+                <field name="name" string="Référence"/>
+                <field name="client_id" string="Client"/>
+                <field name="provider_id" string="Prestataire"/>
+                <field name="category_id" string="Catégorie"/>
+                <filter name="today" string="Aujourd'hui"
+                    domain="[('date_start','&gt;=',context_today().strftime('%Y-%m-%d 00:00:00')),
+                              ('date_start','&lt;=',context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter name="in_progress" string="En cours" domain="[('state','=','in_progress')]"/>
+                <filter name="confirmed" string="Confirmées" domain="[('state','=','confirmed')]"/>
+                <filter name="done" string="Terminées" domain="[('state','=','done')]"/>
+                <filter name="unpaid" string="Non payées" domain="[('payment_state','=','pending')]"/>
+                <group>
+                    <filter name="group_state" string="Statut" context="{'group_by':'state'}"/>
+                    <filter name="group_provider" string="Prestataire" context="{'group_by':'provider_id'}"/>
+                    <filter name="group_category" string="Catégorie" context="{'group_by':'category_id'}"/>
+                    <filter name="group_payment" string="Paiement" context="{'group_by':'payment_method'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by':'date_start:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_senclean_mission" model="ir.actions.act_window">
+        <field name="name">Missions</field>
+        <field name="res_model">senclean.mission</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_senclean_mission_search"/>
+    </record>
+
+</odoo>

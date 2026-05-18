@@ -1,0 +1,543 @@
+/* ============================================================
+   SenClean Portal — Styles page d'accueil
+   ============================================================ */
+
+/* ── Couleurs principales ───────────────────────────────────── */
+/* Primaire : #0F6E56  |  Foncé : #0a4a38  |  Clair : #1a8a6a  */
+
+/* ── Hero section ───────────────────────────────────────────── */
+.sc-hero {
+    background: #0F6E56;
+    padding: 14px 16px 18px;
+    color: #fff;
+    border-radius: 0 0 28px 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Cercle décoratif haut-droite */
+.sc-hero::before {
+    content: '';
+    position: absolute;
+    top: -35px;
+    right: -35px;
+    width: 110px;
+    height: 110px;
+    background: #0a4a38;
+    border-radius: 50%;
+}
+
+/* Cercle décoratif bas-gauche */
+.sc-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -25px;
+    left: -18px;
+    width: 75px;
+    height: 75px;
+    background: #1a8a6a;
+    border-radius: 50%;
+}
+
+.sc-hero h1,
+.sc-hero-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.75rem;
+}
+
+.sc-hero-sub {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,.7);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.sc-hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sc-greeting {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,.7);
+    margin: 0;
+}
+
+.sc-username {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+    margin: 0;
+}
+
+/* Notification / menu button */
+.sc-notif-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,.15);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Barre de recherche blanche (dans le hero) ────────────── */
+.sc-search-white {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border-radius: 9px;
+    padding: 8px 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.sc-search-white-icon {
+    color: #aaa;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.sc-search-white-text {
+    font-size: 0.78rem;
+    color: #bbb;
+    flex: 1;
+}
+
+.sc-search-filter-tag {
+    background: #0F6E56;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Barre de recherche transparente (legacy) ─────────────── */
+.sc-search-bar {
+    background: rgba(255,255,255,.15);
+    border: 1.5px solid rgba(255,255,255,.4);
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    color: #fff;
+    width: 100%;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sc-search-bar::placeholder {
+    color: rgba(255,255,255,.7);
+}
+
+.sc-search-bar:focus {
+    outline: none;
+    border-color: rgba(255,255,255,.8);
+    background: rgba(255,255,255,.2);
+}
+
+.sc-filter-btn {
+    background: rgba(255,255,255,.2);
+    border: 1.5px solid rgba(255,255,255,.4);
+    border-radius: 10px;
+    color: #fff;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+.sc-filter-btn:hover {
+    background: rgba(255,255,255,.3);
+}
+
+/* ── Boutons CTA visiteur (dans le hero) ─────────────────── */
+.sc-cta-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.sc-btn-login {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #0F6E56;
+    text-decoration: none;
+    display: block;
+}
+
+.sc-btn-login:hover {
+    background: #f0f9f5;
+    color: #0F6E56;
+    text-decoration: none;
+}
+
+.sc-btn-register {
+    flex: 1;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.4);
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    display: block;
+}
+
+.sc-btn-register:hover {
+    background: rgba(255,255,255,.25);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ── Bannière CTA prestataire (dans le hero, visiteur) ──────── */
+.sc-provider-cta-banner {
+    background: #0a4a38;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.sc-provider-cta-btn {
+    background: #1D9E75;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.sc-provider-cta-btn:hover {
+    background: #18886a;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ── Sections ────────────────────────────────────────────────── */
+.sc-section {
+    padding: 10px 14px;
+}
+
+.sc-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.sc-section-title {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.sc-voir-tout {
+    font-size: 0.72rem;
+    color: #0F6E56;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.sc-voir-tout:hover {
+    text-decoration: underline;
+}
+
+/* ── Grille catégories ───────────────────────────────────────── */
+.sc-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.sc-cat-card {
+    background: #f7f9f7;
+    border-radius: 9px;
+    padding: 8px 6px;
+    text-align: center;
+    border: 0.5px solid #e8f0e9;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.sc-cat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    text-decoration: none;
+    color: inherit;
+}
+
+.sc-cat-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 5px;
+    font-size: 0.9rem;
+}
+
+.sc-cat-name {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #444;
+    line-height: 1.3;
+}
+
+/* ── Bannière promo ─────────────────────────────────────────── */
+.sc-promo-banner {
+    margin: 0 14px 4px;
+    background: #0a4a38;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+
+.sc-promo-badge {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,.7);
+    margin-bottom: 2px;
+}
+
+.sc-promo-text {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.sc-promo-btn {
+    background: #1D9E75;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 5px 10px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-decoration: none;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.sc-promo-btn:hover {
+    background: #18886a;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ── Cartes prestataires ─────────────────────────────────────── */
+.sc-provider-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 0.5px solid #e8e8e4;
+    padding: 9px 10px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow .15s;
+}
+
+.sc-provider-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    text-decoration: none;
+    color: inherit;
+}
+
+.sc-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.sc-avatar-initials {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 0.82rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.sc-provider-name {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #1a1a2e;
+    margin-bottom: 1px;
+}
+
+.sc-provider-meta {
+    font-size: 0.65rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.sc-badge-dispo {
+    background: #E1F5EE;
+    color: #085041;
+    font-size: 0.55rem;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 2px 6px;
+}
+
+.sc-badge-occupee {
+    background: #FAEEDA;
+    color: #854F0B;
+    font-size: 0.55rem;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 2px 6px;
+}
+
+.sc-rate {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #0F6E56;
+    white-space: nowrap;
+}
+
+.sc-heart {
+    color: #ccc;
+    font-size: 0.9rem;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ── Lock overlay (visiteur) ─────────────────────────────────── */
+.sc-lock-overlay {
+    background: rgba(255,255,255,.85);
+    border-radius: 10px;
+    border: 0.5px solid #e8e8e4;
+    padding: 12px;
+    text-align: center;
+    margin: 0 14px 8px;
+}
+
+.sc-lock-btn {
+    background: #0F6E56;
+    color: #fff;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.sc-lock-btn:hover {
+    background: #0a4a38;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ── Barre de navigation fixe en bas ─────────────────────────── */
+.sc-nav-bar {
+    background: #fff;
+    border-top: 0.5px solid #e8e8e4;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 12px;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.sc-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.55rem;
+    color: #bbb;
+    text-decoration: none;
+    min-width: 44px;
+}
+
+.sc-nav-item.active,
+.sc-nav-item:focus,
+.sc-nav-item:hover {
+    color: #0F6E56;
+    text-decoration: none;
+}
+
+.sc-nav-item i {
+    font-size: 1.2rem;
+}
+
+/* ── Wrapper page d'accueil ─────────────────────────────────── */
+.o_portal .sc-portal-home {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #F6F7FB;
+    min-height: 100vh;
+    padding-bottom: 0;
+}
+
+.sc-portal-home .sc-hero {
+    margin: -1rem -1rem 0;
+    border-radius: 0 0 28px 28px;
+}
+
+/* Espace avant la nav bar */
+.sc-portal-home .sc-content {
+    padding-bottom: 70px;
+}

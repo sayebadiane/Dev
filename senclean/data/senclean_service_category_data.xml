@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cat_menage" model="senclean.service.category">
+            <field name="name">Ménage à domicile</field>
+            <field name="sequence">1</field>
+            <field name="description">Nettoyage complet, entretien régulier du domicile</field>
+            <field name="icon">ti-home</field>
+            <field name="service_type">both</field>
+        </record>
+
+        <record id="cat_aide_domicile" model="senclean.service.category">
+            <field name="name">Aide à domicile</field>
+            <field name="sequence">2</field>
+            <field name="description">Accompagnement personnes âgées, courses</field>
+            <field name="icon">ti-heart</field>
+            <field name="service_type">recurrent</field>
+        </record>
+
+        <record id="cat_babysitting" model="senclean.service.category">
+            <field name="name">Babysitting</field>
+            <field name="sequence">3</field>
+            <field name="description">Garde d'enfants, activités, sorties</field>
+            <field name="icon">ti-baby-carriage</field>
+            <field name="service_type">ponctuel</field>
+        </record>
+
+        <record id="cat_repassage" model="senclean.service.category">
+            <field name="name">Repassage</field>
+            <field name="sequence">4</field>
+            <field name="description">Repassage à domicile ou en atelier</field>
+            <field name="icon">ti-shirt</field>
+            <field name="service_type">ponctuel</field>
+        </record>
+
+        <record id="cat_nettoyage_bureau" model="senclean.service.category">
+            <field name="name">Nettoyage bureau / entreprise</field>
+            <field name="sequence">5</field>
+            <field name="description">Entretien d'espaces professionnels</field>
+            <field name="icon">ti-building</field>
+            <field name="service_type">recurrent</field>
+        </record>
+
+        <record id="cat_nettoyage_chantier" model="senclean.service.category">
+            <field name="name">Nettoyage fin de chantier</field>
+            <field name="sequence">6</field>
+            <field name="description">Grand nettoyage après travaux</field>
+            <field name="icon">ti-sparkles</field>
+            <field name="service_type">ponctuel</field>
+        </record>
+
+    </data>
+</odoo>

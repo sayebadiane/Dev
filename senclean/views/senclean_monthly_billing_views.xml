@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_senclean_monthly_billing_form" model="ir.ui.view">
+        <field name="name">senclean.monthly.billing.form</field>
+        <field name="model">senclean.monthly.billing</field>
+        <field name="arch" type="xml">
+            <form string="Facturation mensuelle">
+                <header>
+                    <button name="action_collect_missions" string="Rattacher les missions du mois"
+                        type="object" invisible="state != 'draft'" class="btn-secondary"/>
+                    <button name="action_confirm" string="Confirmer" type="object"
+                        invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_mark_paid" string="Marquer payée" type="object"
+                        invisible="state != 'confirmed'" class="btn-primary"/>
+                    <button name="action_cancel" string="Annuler" type="object"
+                        invisible="state in ['paid','cancelled']" class="btn-danger"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,confirmed,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="billing_month_display" readonly="1"/></h2>
+                    </div>
+                    <group>
+                        <group string="Parties prenantes">
+                            <field name="client_id"/>
+                            <field name="provider_id"/>
+                            <field name="billing_month"/>
+                            <field name="rate_type" readonly="1"/>
+                        </group>
+                        <group string="Montants">
+                            <field name="mission_count" readonly="1"/>
+                            <field name="monthly_rate" readonly="1"
+                                invisible="rate_type != 'monthly'"
+                                string="Forfait mensuel"/>
+                            <field name="amount_total" readonly="1" class="fw-bold"/>
+                            <field name="commission_rate"/>
+                            <field name="commission_amount" readonly="1"/>
+                            <field name="provider_amount" readonly="1" class="fw-bold"/>
+                        </group>
+                    </group>
+                    <group string="Paiement">
+                        <group>
+                            <field name="payment_method"/>
+                            <field name="payment_state"/>
+                        </group>
+                        <group>
+                            <field name="payment_ref"/>
+                            <field name="payment_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Missions du mois" name="missions">
+                            <field name="mission_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date_start"/>
+                                    <field name="duration_hours" string="Durée (h)"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="payment_state" widget="badge"
+                                        decoration-success="payment_state == 'paid'"
+                                        decoration-warning="payment_state == 'pending'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes ou remarques sur cette facturation..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_senclean_monthly_billing_list" model="ir.ui.view">
+        <field name="name">senclean.monthly.billing.list</field>
+        <field name="model">senclean.monthly.billing</field>
+        <field name="arch" type="xml">
+            <list string="Facturations mensuelles"
+                decoration-success="state == 'paid'"
+                decoration-info="state == 'confirmed'"
+                decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="billing_month_display" string="Période"/>
+                <field name="client_id"/>
+                <field name="provider_id"/>
+                <field name="mission_count" string="Passages"/>
+                <field name="amount_total" string="Montant (FCFA)"/>
+                <field name="provider_amount" string="Prestataire (FCFA)"/>
+                <field name="payment_method"/>
+                <field name="payment_state" widget="badge"
+                    decoration-success="payment_state == 'paid'"
+                    decoration-warning="payment_state == 'pending'"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'paid'"
+                    decoration-info="state == 'confirmed'"
+                    decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_senclean_monthly_billing_search" model="ir.ui.view">
+        <field name="name">senclean.monthly.billing.search</field>
+        <field name="model">senclean.monthly.billing</field>
+        <field name="arch" type="xml">
+            <search string="Recherche facturations mensuelles">
+                <field name="client_id" string="Client"/>
+                <field name="provider_id" string="Prestataire"/>
+                <filter name="unpaid" string="Non payées" domain="[('payment_state','=','pending')]"/>
+                <filter name="paid" string="Payées" domain="[('state','=','paid')]"/>
+                <filter name="confirmed" string="Confirmées" domain="[('state','=','confirmed')]"/>
+                <group>
+                    <filter name="group_provider" string="Prestataire" context="{'group_by':'provider_id'}"/>
+                    <filter name="group_client" string="Client" context="{'group_by':'client_id'}"/>
+                    <filter name="group_month" string="Mois" context="{'group_by':'billing_month:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_senclean_monthly_billing" model="ir.actions.act_window">
+        <field name="name">Facturations mensuelles</field>
+        <field name="res_model">senclean.monthly.billing</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_senclean_monthly_billing_search"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Barre d'état colorée -->
+    <record id="view_senclean_provider_form" model="ir.ui.view">
+        <field name="name">senclean.provider.form</field>
+        <field name="model">senclean.provider</field>
+        <field name="arch" type="xml">
+            <form string="Prestataire">
+                <header>
+                    <button name="action_submit" string="Soumettre" type="object"
+                        invisible="state != 'draft'"
+                        class="btn-primary"/>
+                    <button name="action_verify_identity" string="Vérifier l'identité" type="object"
+                        invisible="state != 'submitted'"
+                        class="btn-primary"
+                        groups="senclean.group_senclean_manager"/>
+                    <button name="action_activate" string="Activer" type="object"
+                        invisible="state not in ['verified', 'suspended']"
+                        class="btn-primary"
+                        groups="senclean.group_senclean_manager"/>
+                    <button name="action_suspend" string="Suspendre" type="object"
+                        invisible="state != 'active'"
+                        class="btn-warning"
+                        groups="senclean.group_senclean_manager"/>
+                    <button name="action_reject" string="Refuser" type="object"
+                        invisible="state in ['active', 'rejected', 'draft']"
+                        class="btn-danger"
+                        groups="senclean.group_senclean_manager"/>
+                    <button name="action_reset_draft" string="Remettre en brouillon" type="object"
+                        invisible="state not in ['rejected', 'suspended']"
+                        groups="senclean.group_senclean_admin"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,submitted,verified,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                            name="action_view_missions"
+                            icon="fa-tasks">
+                            <field name="mission_count" widget="statinfo" string="Missions"/>
+                        </button>
+                        <button class="oe_stat_button" type="object"
+                            name="action_view_missions_done"
+                            icon="fa-check-circle">
+                            <field name="mission_done_count" widget="statinfo" string="Terminées"/>
+                        </button>
+                    </div>
+                    <field name="photo" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom complet"/></h1>
+                        <div>
+                            <field name="is_certified" widget="boolean_toggle"/>
+                            <label for="is_certified" string=" Certifié SenClean"/>
+                            <span class="ms-3"/>
+                            <field name="is_premium" widget="boolean_toggle"/>
+                            <label for="is_premium" string=" Premium"/>
+                        </div>
+                    </div>
+                    <notebook>
+                        <page string="Informations personnelles" name="info">
+                            <group>
+                                <group string="Coordonnées">
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="address"/>
+                                    <field name="city"/>
+                                </group>
+                                <group string="Profil professionnel">
+                                    <field name="category_ids" widget="many2many_tags"/>
+                                    <field name="experience_years"/>
+                                    <field name="rate_type"/>
+                                    <field name="hourly_rate"
+                                        invisible="rate_type != 'hourly'"/>
+                                    <field name="monthly_rate"
+                                        invisible="rate_type != 'monthly'"/>
+                                    <field name="intervention_radius_km"/>
+                                </group>
+                            </group>
+                            <field name="bio" placeholder="Présentation du prestataire..."/>
+                            <field name="availability" placeholder="Disponibilités (ex: Lun-Ven 8h-18h)..."/>
+                        </page>
+                        <page string="Identité et vérification" name="identity">
+                            <group>
+                                <group>
+                                    <field name="id_type"/>
+                                    <field name="id_number"/>
+                                </group>
+                                <group>
+                                    <field name="registration_date"/>
+                                    <field name="validation_date"/>
+                                    <field name="validated_by"/>
+                                </group>
+                            </group>
+                            <field name="id_document" widget="binary" filename="id_document_name"/>
+                        </page>
+                        <page string="Géolocalisation" name="geoloc">
+                            <group>
+                                <field name="latitude"/>
+                                <field name="longitude"/>
+                                <field name="intervention_radius_km"/>
+                            </group>
+                        </page>
+                        <page string="Statistiques" name="stats">
+                            <group>
+                                <field name="rating_avg" widget="priority"/>
+                                <field name="mission_count"/>
+                                <field name="mission_done_count"/>
+                            </group>
+                        </page>
+                        <page string="Notes admin" name="admin"
+                            groups="senclean.group_senclean_manager">
+                            <field name="admin_note" placeholder="Notes internes réservées aux administrateurs..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_senclean_provider_list" model="ir.ui.view">
+        <field name="name">senclean.provider.list</field>
+        <field name="model">senclean.provider</field>
+        <field name="arch" type="xml">
+            <list string="Prestataires"
+                decoration-success="state == 'active'"
+                decoration-warning="state == 'submitted' or state == 'verified'"
+                decoration-danger="state == 'rejected' or state == 'suspended'">
+                <field name="photo" widget="image" options="{'size': [40, 40]}"/>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="category_ids" widget="many2many_tags"/>
+                <field name="city"/>
+                <field name="hourly_rate" string="Tarif/h"/>
+                <field name="rating_avg" string="Note" widget="float"/>
+                <field name="mission_count" string="Missions"/>
+                <field name="is_certified" string="Certifié"/>
+                <field name="is_premium" string="Premium"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'active'"
+                    decoration-warning="state in ['submitted','verified']"
+                    decoration-danger="state in ['rejected','suspended']"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_senclean_provider_kanban" model="ir.ui.view">
+        <field name="name">senclean.provider.kanban</field>
+        <field name="model">senclean.provider</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="photo"/>
+                <field name="phone"/>
+                <field name="hourly_rate"/>
+                <field name="rating_avg"/>
+                <field name="city"/>
+                <field name="category_ids"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="d-flex gap-2 mb-2">
+                                <field name="photo" widget="image"
+                                    options="{'size': [48, 48]}" class="rounded-circle"/>
+                                <div>
+                                    <strong><field name="name"/></strong><br/>
+                                    <small class="text-muted"><field name="phone"/></small>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><field name="rating_avg"/> ★</span>
+                                <span><field name="hourly_rate"/> FCFA/h</span>
+                            </div>
+                            <field name="category_ids" widget="many2many_tags"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_senclean_provider_search" model="ir.ui.view">
+        <field name="name">senclean.provider.search</field>
+        <field name="model">senclean.provider</field>
+        <field name="arch" type="xml">
+            <search string="Recherche prestataires">
+                <field name="name" string="Nom"/>
+                <field name="phone"/>
+                <field name="city" string="Ville"/>
+                <field name="category_ids" string="Catégorie"
+                    filter_domain="[('category_ids.name', 'ilike', self)]"/>
+                <filter name="active_providers" string="Actifs" domain="[('state','=','active')]"/>
+                <filter name="pending_validation" string="En attente de validation"
+                    domain="[('state','in',['submitted','verified'])]"/>
+                <filter name="premium" string="Premium" domain="[('is_premium','=',True)]"/>
+                <filter name="certified" string="Certifiés" domain="[('is_certified','=',True)]"/>
+                <group>
+                    <filter name="group_state" string="Statut" context="{'group_by':'state'}"/>
+                    <filter name="group_city" string="Ville" context="{'group_by':'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_senclean_provider" model="ir.actions.act_window">
+        <field name="name">Prestataires</field>
+        <field name="res_model">senclean.provider</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_senclean_provider_search"/>
+        <field name="context">{'search_default_active_providers': 1}</field>
+    </record>
+
+    <record id="action_senclean_provider_pending" model="ir.actions.act_window">
+        <field name="name">En attente de validation</field>
+        <field name="res_model">senclean.provider</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','in',['submitted','verified'])]</field>
+    </record>
+
+</odoo>

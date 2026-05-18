@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_senclean_category_user,senclean.service.category.user,model_senclean_service_category,senclean.group_senclean_user,1,0,0,0
+access_senclean_category_manager,senclean.service.category.manager,model_senclean_service_category,senclean.group_senclean_manager,1,1,1,0
+access_senclean_category_admin,senclean.service.category.admin,model_senclean_service_category,senclean.group_senclean_admin,1,1,1,1
+access_senclean_provider_user,senclean.provider.user,model_senclean_provider,senclean.group_senclean_user,1,0,0,0
+access_senclean_provider_manager,senclean.provider.manager,model_senclean_provider,senclean.group_senclean_manager,1,1,1,0
+access_senclean_provider_admin,senclean.provider.admin,model_senclean_provider,senclean.group_senclean_admin,1,1,1,1
+access_senclean_mission_user,senclean.mission.user,model_senclean_mission,senclean.group_senclean_user,1,1,1,0
+access_senclean_mission_manager,senclean.mission.manager,model_senclean_mission,senclean.group_senclean_manager,1,1,1,0
+access_senclean_mission_admin,senclean.mission.admin,model_senclean_mission,senclean.group_senclean_admin,1,1,1,1
+access_senclean_monthly_billing_user,senclean.monthly.billing.user,model_senclean_monthly_billing,senclean.group_senclean_user,1,0,0,0
+access_senclean_monthly_billing_manager,senclean.monthly.billing.manager,model_senclean_monthly_billing,senclean.group_senclean_manager,1,1,1,0
+access_senclean_monthly_billing_admin,senclean.monthly.billing.admin,model_senclean_monthly_billing,senclean.group_senclean_admin,1,1,1,1
+access_senclean_client_user,senclean.client.user,model_senclean_client,senclean.group_senclean_user,1,0,0,0
+access_senclean_client_manager,senclean.client.manager,model_senclean_client,senclean.group_senclean_manager,1,1,1,0
+access_senclean_client_admin,senclean.client.admin,model_senclean_client,senclean.group_senclean_admin,1,1,1,1

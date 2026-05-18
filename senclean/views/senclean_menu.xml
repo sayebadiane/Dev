@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Menu racine -->
+    <menuitem id="menu_senclean_root"
+        name="SenClean"
+        sequence="50"
+        />
+
+    <!-- Tableau de bord -->
+    <menuitem id="menu_senclean_dashboard"
+        name="Tableau de bord"
+        parent="menu_senclean_root"
+        sequence="1"
+        action="action_senclean_provider"/>
+
+    <!-- Prestataires -->
+    <menuitem id="menu_senclean_providers"
+        name="Prestataires"
+        parent="menu_senclean_root"
+        sequence="10"/>
+
+    <menuitem id="menu_senclean_providers_all"
+        name="Tous les prestataires"
+        parent="menu_senclean_providers"
+        sequence="1"
+        action="action_senclean_provider"/>
+
+    <menuitem id="menu_senclean_providers_pending"
+        name="En attente de validation"
+        parent="menu_senclean_providers"
+        sequence="2"
+        action="action_senclean_provider_pending"
+        groups="senclean.group_senclean_manager"/>
+
+    <!-- Missions -->
+    <menuitem id="menu_senclean_missions"
+        name="Missions"
+        parent="menu_senclean_root"
+        sequence="20"
+        action="action_senclean_mission"/>
+
+    <!-- Facturation mensuelle -->
+    <menuitem id="menu_senclean_billing"
+        name="Facturation mensuelle"
+        parent="menu_senclean_root"
+        sequence="30"
+        action="action_senclean_monthly_billing"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_senclean_config"
+        name="Configuration"
+        parent="menu_senclean_root"
+        sequence="90"
+        groups="senclean.group_senclean_admin"/>
+
+    <menuitem id="menu_senclean_categories"
+        name="Catégories de services"
+        parent="menu_senclean_config"
+        sequence="1"
+        action="action_senclean_service_category"/>
+
+</odoo>

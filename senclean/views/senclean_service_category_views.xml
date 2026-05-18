@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_senclean_category_list" model="ir.ui.view">
+        <field name="name">senclean.service.category.list</field>
+        <field name="model">senclean.service.category</field>
+        <field name="arch" type="xml">
+            <list string="Catégories de services">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="service_type"/>
+                <field name="provider_count" string="Prestataires actifs"/>
+                <field name="mission_count" string="Missions"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_senclean_category_form" model="ir.ui.view">
+        <field name="name">senclean.service.category.form</field>
+        <field name="model">senclean.service.category</field>
+        <field name="arch" type="xml">
+            <form string="Catégorie de service">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de la catégorie"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="service_type"/>
+                            <field name="sequence"/>
+                            <field name="icon"/>
+                        </group>
+                        <group>
+                            <field name="provider_count" string="Prestataires actifs"/>
+                            <field name="mission_count" string="Missions totales"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description de la catégorie..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_senclean_service_category" model="ir.actions.act_window">
+        <field name="name">Catégories de services</field>
+        <field name="res_model">senclean.service.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

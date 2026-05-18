@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_senclean_mission" model="ir.sequence">
+            <field name="name">Mission SenClean</field>
+            <field name="code">senclean.mission</field>
+            <field name="prefix">SCM/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_senclean_monthly_billing" model="ir.sequence">
+            <field name="name">Facturation Mensuelle SenClean</field>
+            <field name="code">senclean.monthly.billing</field>
+            <field name="prefix">SCMB/%(year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,1325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         1. PAGE D'ACCUEIL  /my  et  /my/home
+    ============================================================ -->
+    <template id="portal_home" name="SenClean — Page d'accueil">
+        <t t-call="portal.portal_layout">
+            <div class="sc-portal-home">
+                <div class="sc-content">
+
+                <!-- ════════════════════════════════════════════════════
+                     ÉTAT VISITEUR NON CONNECTÉ
+                ════════════════════════════════════════════════════ -->
+                <t t-if="is_public">
+
+                    <!-- Hero visiteur -->
+                    <div class="sc-hero">
+                        <div class="sc-hero-top">
+                            <div>
+                                <p class="sc-greeting">Bienvenue sur</p>
+                                <p class="sc-username">SenClean</p>
+                            </div>
+                            <button class="sc-notif-btn" type="button">
+                                <i class="fa fa-bars"/>
+                            </button>
+                        </div>
+                        <p class="sc-hero-title">Services ménagers<br/>de confiance</p>
+                        <p class="sc-hero-sub">
+                            Trouvez un prestataire vérifié<br/>près de chez vous au Sénégal
+                        </p>
+                        <!-- Barre de recherche blanche -->
+                        <div class="sc-search-white">
+                            <i class="fa fa-search sc-search-white-icon"/>
+                            <span class="sc-search-white-text">Rechercher un service...</span>
+                            <span class="sc-search-filter-tag">
+                                <i class="fa fa-sliders"/> Filtrer
+                            </span>
+                        </div>
+                        <!-- Boutons CTA -->
+                        <div class="sc-cta-row">
+                            <a href="/web/login" class="sc-btn-login">
+                                <i class="fa fa-sign-in"/> Se connecter
+                            </a>
+                            <a href="/inscription" class="sc-btn-register">
+                                <i class="fa fa-user-plus"/> S'inscrire
+                            </a>
+                        </div>
+                        <!-- Bannière prestataire -->
+                        <div class="sc-provider-cta-banner">
+                            <div>
+                                <strong style="color:#fff;font-size:0.78rem;display:block;">
+                                    Vous êtes prestataire ?
+                                </strong>
+                                <span style="font-size:0.65rem;color:rgba(255,255,255,.7);">
+                                    Inscrivez-vous et trouvez des clients
+                                </span>
+                            </div>
+                            <a href="/inscription" class="sc-provider-cta-btn">
+                                Rejoindre <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Catégories -->
+                    <div class="sc-section">
+                        <div class="sc-section-header">
+                            <span class="sc-section-title">Catégories</span>
+                            <a href="/providers" class="sc-voir-tout">Voir tout</a>
+                        </div>
+                        <div class="sc-categories-grid">
+                            <t t-foreach="categories" t-as="cat">
+                                <a t-attf-href="/providers?category=#{cat['id']}"
+                                   class="sc-cat-card">
+                                    <div class="sc-cat-icon"
+                                         t-attf-style="background-color: #{cat['bg_color']};">
+                                        <i t-attf-class="fa #{cat['fa_icon']}"
+                                           t-attf-style="color: #{cat['icon_color']};"/>
+                                    </div>
+                                    <div class="sc-cat-name" t-out="cat['name']"/>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- En-tête section prestataires -->
+                    <div class="sc-section" style="padding-bottom:6px">
+                        <div class="sc-section-header">
+                            <span class="sc-section-title">Prestataires près de vous</span>
+                        </div>
+                    </div>
+
+                    <!-- Un prestataire en aperçu flou -->
+                    <div style="padding:0 14px;">
+                        <t t-if="teaser_providers">
+                            <t t-foreach="teaser_providers" t-as="prov">
+                                <div class="sc-provider-card"
+                                     style="opacity:0.5;filter:blur(1.5px);pointer-events:none;">
+                                    <div class="sc-avatar-initials"
+                                         t-attf-style="background-color: #{prov['avatar_color']};">
+                                        <t t-out="prov['initials']"/>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="sc-provider-name" t-out="prov['name']"/>
+                                        <div class="sc-provider-meta" t-out="prov['main_cat']"/>
+                                        <div class="sc-provider-meta mt-1">
+                                            <i class="fa fa-star text-warning"
+                                               style="font-size:0.7rem"/>
+                                            <t t-out="'%.1f' % prov['rating_avg']"/>
+                                        </div>
+                                    </div>
+                                    <span class="sc-rate" t-out="prov['rate_label']"/>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+
+                    <!-- Overlay de verrouillage -->
+                    <div class="sc-lock-overlay">
+                        <div style="font-size:1.4rem;color:#0F6E56;margin-bottom:4px;">
+                            <i class="fa fa-lock"/>
+                        </div>
+                        <p style="font-size:0.72rem;color:#888;line-height:1.5;margin-bottom:8px;">
+                            Connectez-vous pour voir<br/>les prestataires disponibles
+                        </p>
+                        <a href="/web/login" class="sc-lock-btn">Se connecter</a>
+                    </div>
+
+                </t>
+
+                <!-- ════════════════════════════════════════════════════
+                     UTILISATEUR CONNECTÉ (prestataire ou client)
+                ════════════════════════════════════════════════════ -->
+                <t t-else="">
+
+                    <!-- Hero connecté -->
+                    <div class="sc-hero">
+                        <div class="sc-hero-top">
+                            <div>
+                                <p class="sc-greeting">Bonjour &#x1F44B;</p>
+                                <p class="sc-username" t-out="first_name"/>
+                            </div>
+                            <button class="sc-notif-btn" type="button">
+                                <i class="fa fa-bell"/>
+                            </button>
+                        </div>
+
+                        <t t-if="is_provider">
+                            <!-- Statut + KPI prestataire -->
+                            <div class="d-flex align-items-center gap-2 mb-3"
+                                 style="position:relative;z-index:1">
+                                <div class="sc-avatar-initials"
+                                     t-attf-style="background-color: #{provider_avatar_color};width:44px;height:44px;font-size:1rem;">
+                                    <t t-out="provider_initials"/>
+                                </div>
+                                <div>
+                                    <div style="font-size:0.85rem;font-weight:500;color:#fff;"
+                                         t-out="provider.name"/>
+                                    <span t-attf-class="badge rounded-pill #{
+                                        'text-bg-success' if provider.state == 'active'
+                                        else 'text-bg-warning'}" style="font-size:0.65rem;">
+                                        <t t-out="dict(provider._fields['state'].selection).get(provider.state)"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2" style="position:relative;z-index:1;">
+                                <div class="text-center flex-fill"
+                                     style="background:rgba(255,255,255,.15);border-radius:8px;padding:6px 4px;">
+                                    <div style="font-weight:700;font-size:1.1rem;"
+                                         t-out="provider.mission_count"/>
+                                    <div style="font-size:0.6rem;opacity:.85;">Missions</div>
+                                </div>
+                                <div class="text-center flex-fill"
+                                     style="background:rgba(255,255,255,.15);border-radius:8px;padding:6px 4px;">
+                                    <div style="font-weight:700;font-size:1.1rem;"
+                                         t-out="provider.mission_done_count"/>
+                                    <div style="font-size:0.6rem;opacity:.85;">Terminées</div>
+                                </div>
+                                <div class="text-center flex-fill"
+                                     style="background:rgba(255,255,255,.15);border-radius:8px;padding:6px 4px;">
+                                    <div style="font-weight:700;font-size:1.1rem;">
+                                        <t t-out="'%.1f' % provider.rating_avg"/>
+                                        <i class="fa fa-star" style="font-size:0.75rem"/>
+                                    </div>
+                                    <div style="font-size:0.6rem;opacity:.85;">Note</div>
+                                </div>
+                                <div class="text-center flex-fill"
+                                     style="background:rgba(255,255,255,.15);border-radius:8px;padding:6px 4px;">
+                                    <div style="font-weight:700;font-size:1.1rem;color:#ffc107;"
+                                         t-out="unpaid_count"/>
+                                    <div style="font-size:0.6rem;opacity:.85;">Non payées</div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-else="">
+                            <!-- Hero client : titre + recherche blanche -->
+                            <p class="sc-hero-title">Services ménagers<br/>de confiance</p>
+                            <div class="sc-search-white">
+                                <i class="fa fa-search sc-search-white-icon"/>
+                                <span class="sc-search-white-text">Rechercher un service...</span>
+                                <span class="sc-search-filter-tag">
+                                    <i class="fa fa-sliders"/> Filtrer
+                                </span>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- ── DASHBOARD PRESTATAIRE ──────────────────────── -->
+                    <t t-if="is_provider">
+                        <div class="sc-section">
+                            <div class="sc-section-header">
+                                <span class="sc-section-title">Missions à venir</span>
+                                <a href="/my/provider/missions" class="sc-voir-tout">Voir tout</a>
+                            </div>
+                            <div t-if="not upcoming_missions"
+                                 class="text-muted" style="font-size:0.78rem;padding:8px 0">
+                                Aucune mission confirmée ou en cours.
+                            </div>
+                            <t t-foreach="upcoming_missions" t-as="m">
+                                <a t-attf-href="/my/provider/missions/#{m.id}"
+                                   class="sc-provider-card">
+                                    <div class="sc-avatar-initials"
+                                         t-attf-style="background-color: #{
+                                             '#0F6E56' if m.state == 'in_progress'
+                                             else '#1565C0'};width:36px;height:36px;font-size:0.8rem;">
+                                        <i t-attf-class="fa #{
+                                            'fa-play' if m.state == 'in_progress'
+                                            else 'fa-calendar-check-o'}"/>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="sc-provider-name" t-out="m.name"/>
+                                        <div class="sc-provider-meta">
+                                            <i class="fa fa-user-o"/>
+                                            <t t-out="m.client_id.name"/>
+                                        </div>
+                                    </div>
+                                    <div class="text-end flex-shrink-0">
+                                        <span class="sc-rate" style="font-size:0.72rem;">
+                                            <span t-field="m.date_start"
+                                                  t-options='{"format": "dd/MM HH:mm"}'/>
+                                        </span>
+                                        <br/>
+                                        <span t-attf-class="#{
+                                            'sc-badge-dispo' if m.state == 'in_progress'
+                                            else 'sc-badge-occupee'}">
+                                            <t t-out="dict(m._fields['state'].selection).get(m.state)"/>
+                                        </span>
+                                    </div>
+                                </a>
+                            </t>
+                        </div>
+
+                        <t t-if="recent_done">
+                            <div class="sc-section">
+                                <div class="sc-section-header">
+                                    <span class="sc-section-title">Dernières terminées</span>
+                                </div>
+                                <t t-foreach="recent_done" t-as="m">
+                                    <a t-attf-href="/my/provider/missions/#{m.id}"
+                                       class="sc-provider-card" style="opacity:0.8;">
+                                        <div class="sc-avatar-initials"
+                                             style="background-color:#37474F;width:36px;height:36px;font-size:0.8rem;">
+                                            <i class="fa fa-check"/>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="sc-provider-name" t-out="m.name"/>
+                                            <div class="sc-provider-meta">
+                                                <i class="fa fa-user-o"/>
+                                                <t t-out="m.client_id.name"/>
+                                            </div>
+                                        </div>
+                                        <div class="text-end flex-shrink-0">
+                                            <t t-if="m.payment_state == 'paid'">
+                                                <span class="sc-badge-dispo">Payée</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="sc-badge-occupee">Non payée</span>
+                                            </t>
+                                        </div>
+                                    </a>
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- Accès rapides -->
+                        <div class="sc-section">
+                            <div class="sc-categories-grid">
+                                <a href="/my/provider" class="sc-cat-card">
+                                    <div class="sc-cat-icon" style="background-color:#E1F5EE;">
+                                        <i class="fa fa-user" style="color:#0F6E56;"/>
+                                    </div>
+                                    <div class="sc-cat-name">Mon profil</div>
+                                </a>
+                                <a href="/my/provider/missions" class="sc-cat-card">
+                                    <div class="sc-cat-icon" style="background-color:#E6F1FB;">
+                                        <i class="fa fa-tasks" style="color:#185FA5;"/>
+                                    </div>
+                                    <div class="sc-cat-name">Mes missions</div>
+                                </a>
+                                <a href="/my/provider/billing" class="sc-cat-card">
+                                    <div class="sc-cat-icon" style="background-color:#FAEEDA;">
+                                        <i class="fa fa-money" style="color:#854F0B;"/>
+                                    </div>
+                                    <div class="sc-cat-name">Paiements</div>
+                                </a>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- ── DASHBOARD CLIENT ───────────────────────────── -->
+                    <t t-else="">
+                        <div class="sc-section">
+                            <div class="sc-section-header">
+                                <span class="sc-section-title">Catégories</span>
+                                <a href="/providers" class="sc-voir-tout">Voir tout</a>
+                            </div>
+                            <div class="sc-categories-grid">
+                                <t t-foreach="categories" t-as="cat">
+                                    <a t-attf-href="/providers?category=#{cat['id']}"
+                                       class="sc-cat-card">
+                                        <div class="sc-cat-icon"
+                                             t-attf-style="background-color: #{cat['bg_color']};">
+                                            <i t-attf-class="fa #{cat['fa_icon']}"
+                                               t-attf-style="color: #{cat['icon_color']};"/>
+                                        </div>
+                                        <div class="sc-cat-name" t-out="cat['name']"/>
+                                    </a>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Bannière promo -->
+                        <div class="sc-promo-banner">
+                            <div>
+                                <div class="sc-promo-badge">Offre de bienvenue</div>
+                                <div class="sc-promo-text">-20% sur la 1ère réservation</div>
+                            </div>
+                            <a href="/my/missions" class="sc-promo-btn">Réserver</a>
+                        </div>
+
+                        <!-- Prestataires -->
+                        <div class="sc-section">
+                            <div class="sc-section-header">
+                                <span class="sc-section-title">Prestataires près de vous</span>
+                                <a href="/providers" class="sc-voir-tout">Voir tout</a>
+                            </div>
+                            <div t-if="not providers"
+                                 style="font-size:0.78rem;color:#888;padding:8px 0;text-align:center;">
+                                Aucun prestataire disponible pour le moment.
+                            </div>
+                            <t t-foreach="providers" t-as="prov">
+                                <a t-attf-href="/providers/#{prov['provider_id']}"
+                                   class="sc-provider-card">
+                                    <div class="sc-avatar-initials"
+                                         t-attf-style="background-color: #{prov['avatar_color']};">
+                                        <t t-out="prov['initials']"/>
+                                    </div>
+                                    <div class="flex-grow-1" style="min-width:0;">
+                                        <div class="sc-provider-name" t-out="prov['name']"/>
+                                        <div class="sc-provider-meta">
+                                            <t t-if="prov['main_cat']" t-out="prov['main_cat']"/>
+                                        </div>
+                                        <div class="sc-provider-meta mt-1">
+                                            <i class="fa fa-star text-warning"
+                                               style="font-size:0.7rem"/>
+                                            <t t-out="'%.1f' % prov['rating_avg']"/>
+                                            <span class="dot"
+                                                  style="width:2px;height:2px;background:#ccc;border-radius:50%;display:inline-block;"/>
+                                            <span t-attf-class="#{
+                                                'sc-badge-dispo' if prov['state'] == 'active'
+                                                else 'sc-badge-occupee'}">
+                                                <t t-if="prov['state'] == 'active'">Disponible</t>
+                                                <t t-else="">Occupée</t>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-end gap-1 flex-shrink-0">
+                                        <span class="sc-rate" t-out="prov['rate_label']"/>
+                                        <i class="fa fa-heart-o sc-heart"/>
+                                    </div>
+                                </a>
+                            </t>
+                        </div>
+                    </t>
+
+                </t><!-- /t-else (connecté) -->
+
+                </div><!-- /sc-content -->
+
+                <!-- ── Barre de navigation fixe en bas ───────────────── -->
+                <nav class="sc-nav-bar">
+                    <a href="/my" class="sc-nav-item active">
+                        <i class="fa fa-home"/>
+                        <span>Accueil</span>
+                    </a>
+                    <a href="/providers" class="sc-nav-item">
+                        <i class="fa fa-search"/>
+                        <span>Recherche</span>
+                    </a>
+                    <a href="/my/missions" class="sc-nav-item">
+                        <i class="fa fa-calendar"/>
+                        <span>Réservations</span>
+                    </a>
+                    <a href="/web/login" class="sc-nav-item">
+                        <i class="fa fa-envelope-o"/>
+                        <span>Messages</span>
+                    </a>
+                    <a t-attf-href="#{'/my' if not is_public else '/web/login'}"
+                       class="sc-nav-item">
+                        <i class="fa fa-user"/>
+                        <span>Profil</span>
+                    </a>
+                </nav>
+
+            </div><!-- /sc-portal-home -->
+        </t>
+    </template>
+
+    <!-- ============================================================
+         2. PAGE D'INSCRIPTION  /inscription
+    ============================================================ -->
+    <template id="portal_inscription" name="SenClean — Inscription client">
+        <t t-call="portal.portal_layout">
+            <div style="max-width:480px;margin:0 auto;padding:1rem;">
+
+                <!-- En-tête -->
+                <div class="sc-hero py-4 px-3 mb-4 text-center"
+                     style="border-radius:20px;">
+                    <h4 class="fw-bold text-white mb-1">Créer mon compte</h4>
+                    <p style="color:rgba(255,255,255,0.8);font-size:0.9rem;margin:0;">
+                        Rejoignez SenClean pour réserver vos services ménagers
+                    </p>
+                </div>
+
+                <form method="POST" action="/inscription">
+                    <input type="hidden" name="csrf_token"
+                           t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+
+                    <!-- Nom -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Nom complet <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="name"
+                               t-att-value="kw.get('name', '')"
+                               placeholder="Ex: Fatou Diallo"
+                               t-attf-class="form-control #{
+                                   'is-invalid' if error.get('name') else ''}"/>
+                        <div t-if="error.get('name')" class="invalid-feedback d-block">
+                            <t t-out="error['name']"/>
+                        </div>
+                    </div>
+
+                    <!-- Téléphone -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Téléphone <span class="text-danger">*</span>
+                        </label>
+                        <input type="tel" name="phone"
+                               t-att-value="kw.get('phone', '')"
+                               placeholder="Ex: 77 123 45 67"
+                               t-attf-class="form-control #{
+                                   'is-invalid' if error.get('phone') else ''}"/>
+                        <div t-if="error.get('phone')" class="invalid-feedback d-block">
+                            <t t-out="error['phone']"/>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Adresse email <span class="text-danger">*</span>
+                        </label>
+                        <input type="email" name="email"
+                               t-att-value="kw.get('email', '')"
+                               placeholder="votre@email.com"
+                               t-attf-class="form-control #{
+                                   'is-invalid' if error.get('email') else ''}"/>
+                        <div t-if="error.get('email')" class="invalid-feedback d-block">
+                            <t t-out="error['email']"/>
+                        </div>
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Adresse</label>
+                        <input type="text" name="address"
+                               t-att-value="kw.get('address', '')"
+                               placeholder="Ex: Lot 45, Cité Keur Gorgui"
+                               class="form-control"/>
+                    </div>
+
+                    <!-- Ville -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ville</label>
+                        <input type="text" name="city"
+                               t-att-value="kw.get('city', 'Dakar')"
+                               class="form-control"/>
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Mot de passe <span class="text-danger">*</span>
+                        </label>
+                        <input type="password" name="password"
+                               placeholder="Minimum 6 caractères"
+                               t-attf-class="form-control #{
+                                   'is-invalid' if error.get('password') else ''}"/>
+                        <div t-if="error.get('password')" class="invalid-feedback d-block">
+                            <t t-out="error['password']"/>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation mot de passe -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            Confirmer le mot de passe <span class="text-danger">*</span>
+                        </label>
+                        <input type="password" name="confirm_password"
+                               placeholder="Répétez le mot de passe"
+                               t-attf-class="form-control #{
+                                   'is-invalid' if error.get('confirm_password') else ''}"/>
+                        <div t-if="error.get('confirm_password')"
+                             class="invalid-feedback d-block">
+                            <t t-out="error['confirm_password']"/>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-lg w-100 fw-bold mb-3"
+                            style="background:#1A5C3A;color:#fff;border-radius:14px;padding:0.9rem;">
+                        <i class="fa fa-user-plus me-2"/>Créer mon compte
+                    </button>
+
+                    <p class="text-center text-muted small">
+                        Déjà inscrit ?
+                        <a t-attf-href="/web/login?redirect=#{redirect}"
+                           style="color:#1A5C3A;font-weight:600;">
+                            Se connecter
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         3. Liste des PRESTATAIRES  /providers
+    ============================================================ -->
+    <template id="portal_providers_list" name="Trouver un prestataire">
+        <t t-call="portal.portal_layout">
+
+            <!-- Hero : titre dynamique selon catégorie filtrée -->
+            <div class="sc-hero" style="border-radius:0 0 20px 20px;">
+                <div class="sc-hero-top">
+                    <div>
+                        <p class="sc-greeting">
+                            <t t-if="selected_category_name">
+                                Catégorie sélectionnée
+                            </t>
+                            <t t-else="">Tous les prestataires</t>
+                        </p>
+                        <p class="sc-username">
+                            <t t-if="selected_category_name" t-out="selected_category_name"/>
+                            <t t-else="">Trouver un prestataire</t>
+                        </p>
+                    </div>
+                    <a href="/my" style="color:rgba(255,255,255,.7);font-size:0.78rem;text-decoration:none;">
+                        <i class="fa fa-home"/> Accueil
+                    </a>
+                </div>
+
+                <!-- Barre de recherche -->
+                <form method="GET" action="/providers">
+                    <div class="sc-search-white mb-2">
+                        <i class="fa fa-search sc-search-white-icon"/>
+                        <input name="search" t-att-value="search"
+                               placeholder="Rechercher par nom..."
+                               style="border:none;outline:none;flex:1;font-size:0.78rem;color:#333;background:transparent;"/>
+                        <t t-if="selected_category">
+                            <input type="hidden" name="category" t-att-value="selected_category"/>
+                        </t>
+                    </div>
+                    <!-- Filtres rapides -->
+                    <div class="d-flex gap-2" style="position:relative;z-index:1;overflow-x:auto;padding-bottom:2px;">
+                        <a href="/providers"
+                           t-attf-class="sc-filter-btn #{'' if selected_category else 'fw-bold'}"
+                           style="font-size:0.72rem;text-decoration:none;">
+                            Tous
+                        </a>
+                        <t t-foreach="categories" t-as="cat">
+                            <a t-attf-href="/providers?category=#{cat.id}"
+                               t-attf-class="sc-filter-btn #{
+                                   'fw-bold' if selected_category == cat.id else ''}"
+                               style="font-size:0.72rem;text-decoration:none;white-space:nowrap;">
+                                <t t-out="cat.name"/>
+                            </a>
+                        </t>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Aucun résultat -->
+            <div t-if="not providers"
+                 style="text-align:center;padding:2rem 1rem;color:#888;">
+                <i class="fa fa-search" style="font-size:2rem;margin-bottom:8px;display:block;"/>
+                <p style="font-size:0.85rem;">Aucun prestataire trouvé.</p>
+                <a href="/providers" style="color:#0F6E56;font-size:0.82rem;">Voir tous les prestataires</a>
+            </div>
+
+            <!-- Liste des prestataires -->
+            <div style="padding:10px 14px;">
+                <t t-foreach="providers" t-as="prov">
+                    <div class="sc-provider-card">
+                        <!-- Avatar -->
+                        <div class="sc-avatar-initials"
+                             t-attf-style="background-color: #{prov['avatar_color']};">
+                            <t t-out="prov['initials']"/>
+                        </div>
+
+                        <!-- Infos -->
+                        <div class="flex-grow-1" style="min-width:0;">
+                            <div class="sc-provider-name" t-out="prov['name']"/>
+                            <div class="sc-provider-meta">
+                                <t t-out="prov['main_cat']"/>
+                                <t t-if="prov['city']">
+                                    <span style="margin:0 2px;color:#ddd;">·</span>
+                                    <i class="fa fa-map-marker"/>
+                                    <t t-out="prov['city']"/>
+                                </t>
+                            </div>
+                            <div class="sc-provider-meta mt-1">
+                                <i class="fa fa-star text-warning" style="font-size:0.7rem"/>
+                                <t t-out="'%.1f' % prov['rating_avg']"/>
+                                <span style="color:#ccc;margin:0 2px;">·</span>
+                                <t t-out="prov['mission_done_count']"/> missions
+                                <t t-if="prov['is_certified']">
+                                    <span class="sc-badge-dispo" style="font-size:0.6rem;">Certifié</span>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Tarif + actions -->
+                        <div class="d-flex flex-column align-items-end gap-1 flex-shrink-0">
+                            <span class="sc-rate" t-out="prov['rate_label']"/>
+                            <div class="d-flex gap-1">
+                                <a t-attf-href="/providers/#{prov['id']}"
+                                   style="font-size:0.65rem;color:#0F6E56;border:1px solid #0F6E56;border-radius:6px;padding:3px 7px;text-decoration:none;">
+                                    Voir
+                                </a>
+                                <a t-attf-href="/my/book/#{prov['id']}"
+                                   style="font-size:0.65rem;background:#0F6E56;color:#fff;border-radius:6px;padding:3px 7px;text-decoration:none;font-weight:500;">
+                                    Réserver
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+
+            <div t-if="pager" class="o_portal_pager text-center mt-3">
+                <t t-call="portal.pager" t-value="pager"/>
+            </div>
+
+            <!-- Nav bar -->
+            <nav class="sc-nav-bar">
+                <a href="/my" class="sc-nav-item">
+                    <i class="fa fa-home"/><span>Accueil</span>
+                </a>
+                <a href="/providers" class="sc-nav-item active">
+                    <i class="fa fa-search"/><span>Recherche</span>
+                </a>
+                <a href="/my/missions" class="sc-nav-item">
+                    <i class="fa fa-calendar"/><span>Réservations</span>
+                </a>
+                <a href="/web/login" class="sc-nav-item">
+                    <i class="fa fa-envelope-o"/><span>Messages</span>
+                </a>
+                <a t-attf-href="#{'/my' if not is_public else '/web/login'}"
+                   class="sc-nav-item">
+                    <i class="fa fa-user"/><span>Profil</span>
+                </a>
+            </nav>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         3. Profil public d'un prestataire  /providers/<id>
+    ============================================================ -->
+    <template id="portal_provider_detail" name="Profil prestataire">
+        <t t-call="portal.portal_layout">
+            <!-- En-tête profil -->
+            <div class="sc-hero py-4 px-3 mb-3" style="border-radius:0 0 24px 24px;">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="sc-avatar-initials"
+                         style="width:64px;height:64px;font-size:1.3rem;background:#2E7D52;flex-shrink:0;">
+                        <t t-out="''.join(x[0].upper() for x in (provider.name or '').split()[:2])"/>
+                    </div>
+                    <div>
+                        <h4 class="mb-1 text-white fw-bold" t-out="provider.name"/>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <t t-foreach="provider.category_ids" t-as="cat">
+                                <span class="badge"
+                                      style="background:rgba(255,255,255,0.25);font-size:0.75rem;">
+                                    <t t-out="cat.name"/>
+                                </span>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="ms-auto text-end flex-shrink-0">
+                        <t t-if="provider.is_certified">
+                            <div class="badge text-bg-info mb-1">&#10003; Certifié</div>
+                        </t>
+                        <t t-if="provider.is_premium">
+                            <div class="badge text-bg-warning">Premium</div>
+                        </t>
+                    </div>
+                </div>
+                <!-- Note + stats -->
+                <div class="d-flex gap-3 mt-2">
+                    <div>
+                        <t t-foreach="range(5)" t-as="i">
+                            <i t-attf-class="fa #{
+                                'fa-star text-warning' if i &lt; provider.rating_avg
+                                else 'fa-star-o text-white'}"/>
+                        </t>
+                        <span class="text-white ms-1" style="font-size:0.85rem;">
+                            <t t-out="'%.1f' % provider.rating_avg"/>
+                        </span>
+                    </div>
+                    <span class="text-white" style="opacity:0.8;font-size:0.85rem;">
+                        <t t-out="provider.mission_done_count"/> missions réalisées
+                    </span>
+                    <t t-if="provider.city">
+                        <span class="text-white" style="opacity:0.8;font-size:0.85rem;">
+                            <i class="fa fa-map-marker me-1"/>
+                            <t t-out="provider.city"/>
+                        </span>
+                    </t>
+                </div>
+            </div>
+
+            <div class="px-3">
+                <!-- Tarification + bouton réserver -->
+                <div class="card mb-3" style="border-radius:16px;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small">Tarification</div>
+                            <t t-if="provider.rate_type == 'hourly'">
+                                <span class="fw-bold fs-5">
+                                    <t t-out="'{:,.0f}'.format(provider.hourly_rate)"/> FCFA/h
+                                </span>
+                            </t>
+                            <t t-else="">
+                                <span class="fw-bold fs-5">
+                                    <t t-out="'{:,.0f}'.format(provider.monthly_rate)"/> FCFA/mois
+                                </span>
+                                <div class="text-muted small">Forfait mensuel</div>
+                            </t>
+                        </div>
+                        <a t-attf-href="/my/book/#{provider.id}"
+                           class="btn btn-lg fw-bold px-4"
+                           style="background:#0F6E56;color:#fff;border-radius:12px;">
+                            <i class="fa fa-calendar-check-o me-1"/>Réserver
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Message pour visiteur non connecté -->
+                <t t-if="is_public">
+                    <div style="background:#E1F5EE;border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+                        <i class="fa fa-info-circle" style="color:#0F6E56;font-size:1.2rem;flex-shrink:0;"/>
+                        <div style="font-size:0.8rem;color:#085041;">
+                            <strong>Inscription requise</strong><br/>
+                            Créez un compte gratuit pour réserver ce prestataire.
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Bio -->
+                <t t-if="provider.bio">
+                    <div class="card mb-3" style="border-radius:16px;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-2">Présentation</h6>
+                            <p class="text-muted mb-0" t-out="provider.bio"/>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Disponibilités -->
+                <t t-if="provider.availability">
+                    <div class="card mb-3" style="border-radius:16px;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fa fa-clock-o me-2 text-success"/>Disponibilités
+                            </h6>
+                            <p class="text-muted mb-0" t-out="provider.availability"/>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Infos contact -->
+                <div class="card mb-3" style="border-radius:16px;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3">Informations</h6>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <div>
+                                <div class="text-muted small">Téléphone</div>
+                                <div class="fw-bold">
+                                    <i class="fa fa-phone me-1 text-success"/>
+                                    <t t-out="provider.phone"/>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Expérience</div>
+                                <div class="fw-bold">
+                                    <t t-out="provider.experience_years"/> ans
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Rayon d'intervention</div>
+                                <div class="fw-bold">
+                                    <t t-out="provider.intervention_radius_km"/> km
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton retour -->
+                <a href="/providers" class="btn btn-outline-secondary w-100 mb-3"
+                   style="border-radius:12px;">
+                    &#8592; Retour à la liste
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         4. Formulaire de réservation  /my/book/<provider_id>
+    ============================================================ -->
+    <template id="portal_book_provider" name="Réserver un prestataire">
+        <t t-call="portal.portal_layout">
+            <!-- En-tête -->
+            <div class="sc-hero py-3 px-3 mb-3" style="border-radius:0 0 20px 20px;">
+                <a t-attf-href="/providers/#{provider.id}"
+                   style="color:rgba(255,255,255,0.8);font-size:0.85rem;text-decoration:none;">
+                    &#8592; Retour au profil
+                </a>
+                <h5 class="fw-bold text-white mt-2 mb-0">
+                    Réserver — <t t-out="provider.name"/>
+                </h5>
+                <div style="color:rgba(255,255,255,0.8);font-size:0.85rem;">
+                    <t t-if="provider.rate_type == 'hourly'">
+                        <t t-out="'{:,.0f}'.format(provider.hourly_rate)"/> FCFA/h
+                    </t>
+                    <t t-else="">
+                        Forfait <t t-out="'{:,.0f}'.format(provider.monthly_rate)"/> FCFA/mois
+                    </t>
+                </div>
+            </div>
+
+            <div class="px-3">
+                <form method="POST" t-attf-action="/my/book/#{provider.id}">
+                    <input type="hidden" name="csrf_token"
+                           t-att-value="request.csrf_token()"/>
+
+                    <!-- Catégorie -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Type de service <span class="text-danger">*</span>
+                        </label>
+                        <select name="category_id"
+                                t-attf-class="form-select #{
+                                    'is-invalid' if error.get('category_id') else ''}">
+                            <option value="">-- Choisir --</option>
+                            <t t-foreach="categories" t-as="cat">
+                                <option t-att-value="cat.id">
+                                    <t t-out="cat.name"/>
+                                </option>
+                            </t>
+                        </select>
+                        <div t-if="error.get('category_id')" class="invalid-feedback d-block">
+                            <t t-out="error['category_id']"/>
+                        </div>
+                    </div>
+
+                    <!-- Date et heure -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Date et heure <span class="text-danger">*</span>
+                        </label>
+                        <input type="datetime-local" name="date_start"
+                               t-att-value="kw.get('date_start', '')"
+                               t-attf-class="form-control #{
+                                   'is-invalid' if error.get('date_start') else ''}"/>
+                        <div t-if="error.get('date_start')" class="invalid-feedback d-block">
+                            <t t-out="error['date_start']"/>
+                        </div>
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            Adresse d'intervention <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="address"
+                               t-att-value="kw.get('address', '')"
+                               placeholder="Ex: Lot 45, Cité Keur Gorgui"
+                               t-attf-class="form-control #{
+                                   'is-invalid' if error.get('address') else ''}"/>
+                        <div t-if="error.get('address')" class="invalid-feedback d-block">
+                            <t t-out="error['address']"/>
+                        </div>
+                    </div>
+
+                    <!-- Ville -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ville</label>
+                        <input type="text" name="city"
+                               t-att-value="kw.get('city', provider.city or 'Dakar')"
+                               class="form-control"/>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Instructions (optionnel)</label>
+                        <textarea name="instructions" rows="3"
+                                  class="form-control"
+                                  placeholder="Accès au logement, préférences particulières...">
+                            <t t-out="kw.get('instructions', '')"/>
+                        </textarea>
+                    </div>
+
+                    <!-- Récapitulatif tarif -->
+                    <div class="alert mb-4"
+                         style="background:#E8F5E9;border:none;border-radius:12px;">
+                        <div class="fw-bold text-success mb-1">Récapitulatif</div>
+                        <div class="d-flex justify-content-between small">
+                            <span>Prestataire</span>
+                            <span class="fw-bold" t-out="provider.name"/>
+                        </div>
+                        <div class="d-flex justify-content-between small">
+                            <span>Tarification</span>
+                            <span class="fw-bold">
+                                <t t-if="provider.rate_type == 'hourly'">
+                                    <t t-out="'{:,.0f}'.format(provider.hourly_rate)"/> FCFA/h
+                                </t>
+                                <t t-else="">
+                                    <t t-out="'{:,.0f}'.format(provider.monthly_rate)"/> FCFA/mois
+                                </t>
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between small">
+                            <span>Mode de paiement</span>
+                            <span class="fw-bold">
+                                <t t-if="provider.rate_type == 'monthly'">Fin de mois</t>
+                                <t t-else="">Après la mission</t>
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-lg w-100 fw-bold"
+                            style="background:#1A5C3A;color:#fff;border-radius:14px;padding:0.9rem;">
+                        <i class="fa fa-check me-2"/>Confirmer la réservation
+                    </button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         5. Liste des missions du PRESTATAIRE  /my/provider/missions
+    ============================================================ -->
+    <template id="portal_provider_missions" name="Mes missions (prestataire)">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mes missions</t>
+            </t>
+
+            <div t-if="not missions" class="alert alert-info mt-3">
+                Aucune mission assignée pour le moment.
+            </div>
+
+            <t t-if="missions" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Référence</th>
+                        <th>Client</th>
+                        <th>Catégorie</th>
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Statut</th>
+                        <th class="text-center">Paiement</th>
+                    </tr>
+                </thead>
+                <t t-foreach="missions" t-as="m">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/provider/missions/#{m.id}">
+                                <t t-out="m.name"/>
+                            </a>
+                        </td>
+                        <td><t t-out="m.client_id.name"/></td>
+                        <td><t t-out="m.category_id.name"/></td>
+                        <td class="text-center">
+                            <span t-field="m.date_start"
+                                  t-options='{"format": "dd/MM/yyyy HH:mm"}'/>
+                        </td>
+                        <td class="text-center">
+                            <span t-attf-class="badge rounded-pill #{
+                                'text-bg-success' if m.state == 'done' else
+                                'text-bg-primary' if m.state == 'in_progress' else
+                                'text-bg-warning' if m.state == 'confirmed' else
+                                'text-bg-danger' if m.state == 'cancelled' else
+                                'text-bg-secondary'}">
+                                <t t-out="dict(m._fields['state'].selection).get(m.state)"/>
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span t-attf-class="badge #{
+                                'text-bg-success' if m.payment_state == 'paid'
+                                else 'text-bg-warning'}">
+                                <t t-out="dict(m._fields['payment_state'].selection).get(m.payment_state)"/>
+                            </span>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+
+            <div t-if="pager" class="o_portal_pager text-center">
+                <t t-call="portal.pager" t-value="pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         3. Fil d'Ariane SenClean
+    ============================================================ -->
+    <template id="portal_breadcrumbs_senclean"
+              name="SenClean — Fil d'Ariane"
+              inherit_id="portal.portal_breadcrumbs"
+              priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'mission'"
+                t-attf-class="breadcrumb-item #{'active' if not mission else ''}">
+                <a t-if="mission" t-attf-href="/my/missions">Mes missions</a>
+                <t t-else="">Mes missions</t>
+            </li>
+            <li t-if="mission" class="breadcrumb-item active">
+                <t t-out="mission.name"/>
+            </li>
+            <li t-if="page_name == 'provider'" class="breadcrumb-item active">
+                Mon profil prestataire
+            </li>
+        </xpath>
+    </template>
+
+    <!-- ============================================================
+         3. Liste des missions  /my/missions
+    ============================================================ -->
+    <template id="portal_my_missions" name="Mes missions SenClean">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mes missions</t>
+            </t>
+
+            <div t-if="not missions" class="alert alert-info mt-3" role="alert">
+                Vous n'avez aucune mission pour le moment.
+            </div>
+
+            <t t-if="missions" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Référence</th>
+                        <th>Prestataire</th>
+                        <th>Catégorie</th>
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Statut</th>
+                        <th class="text-end">Montant (FCFA)</th>
+                    </tr>
+                </thead>
+                <t t-foreach="missions" t-as="mission">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/missions/#{mission.id}">
+                                <t t-out="mission.name"/>
+                            </a>
+                        </td>
+                        <td><t t-out="mission.provider_id.name"/></td>
+                        <td><t t-out="mission.category_id.name"/></td>
+                        <td class="text-center">
+                            <span t-field="mission.date_start"
+                                  t-options='{"format": "dd/MM/yyyy"}'/>
+                        </td>
+                        <td class="text-center">
+                            <span t-attf-class="badge rounded-pill #{
+                                'text-bg-success' if mission.state == 'done' else
+                                'text-bg-primary' if mission.state == 'in_progress' else
+                                'text-bg-warning' if mission.state == 'confirmed' else
+                                'text-bg-danger' if mission.state == 'cancelled' else
+                                'text-bg-secondary'}">
+                                <t t-out="dict(mission._fields['state'].selection).get(mission.state)"/>
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <t t-if="mission.rate_type == 'monthly'">
+                                <em class="text-muted">Forfait mensuel</em>
+                            </t>
+                            <t t-else="">
+                                <t t-out="'{:,.0f}'.format(mission.amount_total)"/>
+                            </t>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+
+            <div t-if="pager" class="o_portal_pager text-center">
+                <t t-call="portal.pager" t-value="pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         4. Détail d'une mission  /my/missions/<id>
+    ============================================================ -->
+    <template id="portal_mission_detail" name="Détail mission SenClean">
+        <t t-call="portal.portal_layout">
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center"
+                     style="background:#1A5C3A; color:#fff;">
+                    <h4 class="mb-0">Mission <t t-out="mission.name"/></h4>
+                    <span t-attf-class="badge rounded-pill #{
+                        'text-bg-success' if mission.state == 'done' else
+                        'text-bg-primary' if mission.state == 'in_progress' else
+                        'text-bg-warning' if mission.state == 'confirmed' else
+                        'text-bg-danger' if mission.state == 'cancelled' else
+                        'text-bg-secondary'}">
+                        <t t-out="dict(mission._fields['state'].selection).get(mission.state)"/>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Prestataire</h6>
+                            <p class="fw-bold">
+                                <t t-out="mission.provider_id.name"/>
+                                <t t-if="mission.provider_id.is_certified">
+                                    <span class="badge text-bg-info ms-1">Certifié</span>
+                                </t>
+                            </p>
+                            <h6 class="text-muted">Catégorie</h6>
+                            <p><t t-out="mission.category_id.name"/></p>
+                            <h6 class="text-muted">Adresse d'intervention</h6>
+                            <p><t t-out="mission.address"/>, <t t-out="mission.city"/></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Date et heure</h6>
+                            <p>
+                                <span t-field="mission.date_start"
+                                      t-options='{"format": "dd/MM/yyyy HH:mm"}'/>
+                                <t t-if="mission.date_end">
+                                    &#8594;
+                                    <span t-field="mission.date_end"
+                                          t-options='{"format": "HH:mm"}'/>
+                                </t>
+                            </p>
+                            <t t-if="mission.rate_type != 'monthly'">
+                                <h6 class="text-muted">Montant total</h6>
+                                <p class="fw-bold fs-5">
+                                    <t t-out="'{:,.0f}'.format(mission.amount_total)"/> FCFA
+                                </p>
+                            </t>
+                            <t t-else="">
+                                <h6 class="text-muted">Tarification</h6>
+                                <p>Forfait mensuel — paiement en fin de mois</p>
+                            </t>
+                            <h6 class="text-muted">Statut paiement</h6>
+                            <span t-attf-class="badge #{
+                                'text-bg-success' if mission.payment_state == 'paid' else
+                                'text-bg-warning'}">
+                                <t t-out="dict(mission._fields['payment_state'].selection).get(mission.payment_state)"/>
+                            </span>
+                        </div>
+                    </div>
+
+                    <t t-if="mission.instructions">
+                        <hr/>
+                        <h6 class="text-muted">Instructions</h6>
+                        <p t-out="mission.instructions"/>
+                    </t>
+
+                    <t t-if="mission.state == 'done'">
+                        <hr/>
+                        <h6 class="text-muted">Votre évaluation</h6>
+                        <t t-if="mission.rating">
+                            <div class="d-flex gap-1 fs-4">
+                                <t t-foreach="range(5)" t-as="i">
+                                    <i t-attf-class="fa #{
+                                        'fa-star text-warning' if i &lt; mission.rating
+                                        else 'fa-star-o text-muted'}"/>
+                                </t>
+                            </div>
+                            <p t-if="mission.rating_comment" class="mt-2 fst-italic">
+                                "<t t-out="mission.rating_comment"/>"
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <p class="text-muted">Pas encore évalué.</p>
+                        </t>
+                    </t>
+                </div>
+            </div>
+
+            <div class="text-start mt-3">
+                <a href="/my/missions" class="btn btn-outline-secondary">
+                    &#8592; Retour à mes missions
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         5. Profil prestataire  /my/provider
+    ============================================================ -->
+    <template id="portal_my_provider" name="Mon profil prestataire SenClean">
+        <t t-call="portal.portal_layout">
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center"
+                     style="background:#1A5C3A; color:#fff;">
+                    <div class="d-flex align-items-center gap-3">
+                        <img t-if="provider.photo"
+                             t-attf-src="/web/image/senclean.provider/#{provider.id}/photo/64x64"
+                             class="rounded-circle" style="width:48px;height:48px;object-fit:cover"/>
+                        <h4 class="mb-0"><t t-out="provider.name"/></h4>
+                        <t t-if="provider.is_certified">
+                            <span class="badge text-bg-info">Certifié</span>
+                        </t>
+                        <t t-if="provider.is_premium">
+                            <span class="badge text-bg-warning">Premium</span>
+                        </t>
+                    </div>
+                    <span t-attf-class="badge rounded-pill #{
+                        'text-bg-success' if provider.state == 'active' else
+                        'text-bg-warning' if provider.state in ('submitted','verified') else
+                        'text-bg-secondary'}">
+                        <t t-out="dict(provider._fields['state'].selection).get(provider.state)"/>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Contact</h6>
+                            <p>
+                                <i class="fa fa-phone me-2"/>
+                                <t t-out="provider.phone"/>
+                                <t t-if="provider.email">
+                                    <br/><i class="fa fa-envelope me-2"/>
+                                    <t t-out="provider.email"/>
+                                </t>
+                            </p>
+                            <h6 class="text-muted">Ville</h6>
+                            <p><t t-out="provider.city"/></p>
+                            <h6 class="text-muted">Catégories</h6>
+                            <div class="d-flex flex-wrap gap-1">
+                                <t t-foreach="provider.category_ids" t-as="cat">
+                                    <span class="badge text-bg-primary">
+                                        <t t-out="cat.name"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Tarification</h6>
+                            <t t-if="provider.rate_type == 'hourly'">
+                                <p>
+                                    <strong>
+                                        <t t-out="'{:,.0f}'.format(provider.hourly_rate)"/> FCFA/h
+                                    </strong>
+                                </p>
+                            </t>
+                            <t t-else="">
+                                <p>
+                                    Forfait : <strong>
+                                        <t t-out="'{:,.0f}'.format(provider.monthly_rate)"/> FCFA/mois
+                                    </strong>
+                                </p>
+                            </t>
+                            <h6 class="text-muted">Statistiques</h6>
+                            <p>
+                                <t t-out="provider.mission_count"/> missions
+                                (<t t-out="provider.mission_done_count"/> terminées)
+                            </p>
+                            <t t-if="provider.rating_avg">
+                                <div class="d-flex align-items-center gap-1">
+                                    <t t-foreach="range(5)" t-as="i">
+                                        <i t-attf-class="fa #{
+                                            'fa-star text-warning' if i &lt; provider.rating_avg
+                                            else 'fa-star-o text-muted'}"/>
+                                    </t>
+                                    <span class="ms-1 text-muted small">
+                                        (<t t-out="'%.1f' % provider.rating_avg"/>)
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <t t-if="provider.bio">
+                        <hr/>
+                        <h6 class="text-muted">Présentation</h6>
+                        <p t-out="provider.bio"/>
+                    </t>
+                    <t t-if="provider.availability">
+                        <h6 class="text-muted">Disponibilités</h6>
+                        <p t-out="provider.availability"/>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

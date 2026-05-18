@@ -51,12 +51,21 @@
                         <group string="Scolarité">
                             <field name="class_id"/>
                             <field name="school_year" readonly="1"/>
-                            <field name="unpaid_amount" readonly="1"/>
+                            <field name="unpaid_amount" readonly="1"
+                                   decoration-danger="unpaid_amount &gt; 0"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Parents / Tuteurs" name="parents">
                             <field name="parent_ids" widget="many2many_tags"/>
+                            <field name="parent_ids">
+                                <list string="Parents">
+                                    <field name="full_name"/>
+                                    <field name="relationship"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Paiements" name="payments">
                             <field name="payment_ids" readonly="1">
@@ -105,7 +114,11 @@
                         </page>
                     </notebook>
                 </sheet>
-                <chatter/>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

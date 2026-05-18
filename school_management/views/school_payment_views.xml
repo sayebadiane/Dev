@@ -88,7 +88,7 @@
         </field>
     </record>
 
-    <record id="view_school_payment_search" model="ir.ui.view">
+    <!-- <record id="view_school_payment_search" model="ir.ui.view">
         <field name="name">school.payment.search</field>
         <field name="model">school.payment</field>
         <field name="arch" type="xml">
