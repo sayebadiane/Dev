@@ -40,18 +40,16 @@ class SencleanPortal(CustomerPortal):
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
-        Mission = request.env['senclean.mission']
-        Provider = request.env['senclean.provider']
 
         if 'mission_count' in counters:
-            values['mission_count'] = Mission.search_count(
+            values['mission_count'] = request.env['senclean.mission'].sudo().search_count(
                 [('client_id', '=', partner.id)]
-            ) if Mission.has_access('read') else 0
+            )
 
         if 'provider_count' in counters:
-            values['provider_count'] = Provider.search_count(
+            values['provider_count'] = request.env['senclean.provider'].sudo().search_count(
                 [('partner_id', '=', partner.id)]
-            ) if Provider.has_access('read') else 0
+            )
 
         return values
 
@@ -215,38 +213,79 @@ class SencleanPortal(CustomerPortal):
 
     @http.route(['/my/missions', '/my/missions/page/<int:page>'],
                 type='http', auth='user', website=True)
-    def portal_my_missions(self, page=1, sortby='date', **kw):
+    def portal_my_missions(self, page=1, filter_state='all', **kw):
         partner = request.env.user.partner_id
-        Mission = request.env['senclean.mission']
+        Mission = request.env['senclean.mission'].sudo()
 
-        sortings = {
-            'date': {'label': _('Date'), 'order': 'date_start desc'},
-            'state': {'label': _('Statut'), 'order': 'state'},
-            'amount': {'label': _('Montant'), 'order': 'amount_total desc'},
+        base_domain = [('client_id', '=', partner.id)]
+
+        STATE_FILTERS = {
+            'all':        {'label': 'Toutes',     'domain': []},
+            'confirmed':  {'label': 'Confirmées', 'domain': [('state', '=', 'confirmed')]},
+            'in_progress':{'label': 'En cours',   'domain': [('state', '=', 'in_progress')]},
+            'done':       {'label': 'Terminées',  'domain': [('state', '=', 'done')]},
+            'cancelled':  {'label': 'Annulées',   'domain': [('state', '=', 'cancelled')]},
         }
-        order = sortings.get(sortby, sortings['date'])['order']
+        active_filter = filter_state if filter_state in STATE_FILTERS else 'all'
+        domain = base_domain + STATE_FILTERS[active_filter]['domain']
 
-        domain = [('client_id', '=', partner.id)]
-        mission_count = Mission.search_count(domain)
-
+        total = Mission.search_count(domain)
         pager = portal_pager(
             url='/my/missions',
-            url_args={'sortby': sortby},
-            total=mission_count,
-            page=page,
-            step=10,
+            url_args={'filter_state': active_filter},
+            total=total, page=page, step=10,
         )
-        missions = Mission.search(domain, order=order,
-                                  limit=10, offset=pager['offset'])
+        missions_raw = Mission.search(domain, order='date_start desc',
+                                      limit=10, offset=pager['offset'])
+
+        # Construire les données enrichies pour chaque mission
+        missions = []
+        for m in missions_raw:
+            parts = (m.provider_id.name or '').split()
+            initials = ''.join(x[0].upper() for x in parts[:2]) if parts else '?'
+            prov_idx = m.provider_id.id % len(AVATAR_COLORS)
+            rate_label = ''
+            if m.rate_type == 'monthly':
+                rate_label = 'Forfait mensuel'
+            elif m.hourly_rate:
+                rate_label = '{:,.0f} FCFA/h'.format(m.hourly_rate)
+
+            missions.append({
+                'id': m.id,
+                'name': m.name,
+                'state': m.state,
+                'payment_state': m.payment_state,
+                'date_start': m.date_start,
+                'provider_name': m.provider_id.name or '',
+                'provider_initials': initials,
+                'provider_avatar_color': AVATAR_COLORS[prov_idx],
+                'provider_id': m.provider_id.id,
+                'category': m.category_id.name or '',
+                'address': m.address or '',
+                'city': m.city or '',
+                'rate_label': rate_label,
+                'amount_total': m.amount_total,
+                'rate_type': m.rate_type,
+                'is_certified': m.provider_id.is_certified,
+            })
+
+        # Compteurs par statut pour les badges
+        counts = {
+            'all':         Mission.search_count(base_domain),
+            'confirmed':   Mission.search_count(base_domain + [('state', '=', 'confirmed')]),
+            'in_progress': Mission.search_count(base_domain + [('state', '=', 'in_progress')]),
+            'done':        Mission.search_count(base_domain + [('state', '=', 'done')]),
+            'cancelled':   Mission.search_count(base_domain + [('state', '=', 'cancelled')]),
+        }
 
         values = self._prepare_portal_layout_values()
         values.update({
             'missions': missions,
+            'state_filters': STATE_FILTERS,
+            'active_filter': active_filter,
+            'counts': counts,
             'page_name': 'mission',
             'pager': pager,
-            'sortby': sortby,
-            'searchbar_sortings': sortings,
-            'default_url': '/my/missions',
         })
         return request.render('senclean.portal_my_missions', values)
 
@@ -510,8 +549,14 @@ class SencleanPortal(CustomerPortal):
                 )
 
                 # 4. Connecter automatiquement l'utilisateur
+                # Odoo 19 : authenticate(env, {'type':'password','login':...,'password':...})
                 request.session.authenticate(
-                    request.db, email_normalize(email), password
+                    request.env,
+                    {
+                        'type': 'password',
+                        'login': email_normalize(email),
+                        'password': password,
+                    }
                 )
 
                 return request.redirect(redirect or '/my')
@@ -555,13 +600,19 @@ class SencleanPortal(CustomerPortal):
                 error['address'] = _("Veuillez saisir l'adresse d'intervention.")
 
             if not error:
-                from odoo.fields import Datetime
+                from datetime import datetime as dt
+                # datetime-local HTML envoie '2026-05-19T15:00', Odoo attend un objet datetime
+                try:
+                    date_start_dt = dt.strptime(date_start, '%Y-%m-%dT%H:%M')
+                except ValueError:
+                    date_start_dt = dt.strptime(date_start, '%Y-%m-%d %H:%M:%S')
+
                 Mission = request.env['senclean.mission']
                 mission = Mission.sudo().create({
                     'client_id':    partner.id,
                     'provider_id':  provider.id,
                     'category_id':  int(category_id),
-                    'date_start':   Datetime.from_string(date_start),
+                    'date_start':   date_start_dt,
                     'address':      address,
                     'city':         city or provider.city or 'Dakar',
                     'instructions': instructions,

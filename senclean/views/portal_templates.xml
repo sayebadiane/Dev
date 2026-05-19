@@ -2,6 +2,22 @@
 <odoo>
 
     <!-- ============================================================
+         0. ENTRÉES PORTAIL ODOO — affichées sur /web#action=portal
+    ============================================================ -->
+    <template id="portal_my_home_senclean"
+              inherit_id="portal.portal_my_home"
+              name="SenClean — Entrées portail"
+              priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mes réservations</t>
+                <t t-set="url">/my/missions</t>
+                <t t-set="placeholder_count">mission_count</t>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ============================================================
          1. PAGE D'ACCUEIL  /my  et  /my/home
     ============================================================ -->
     <template id="portal_home" name="SenClean — Page d'accueil">
@@ -422,71 +438,90 @@
     ============================================================ -->
     <template id="portal_inscription" name="SenClean — Inscription client">
         <t t-call="portal.portal_layout">
-            <div style="max-width:480px;margin:0 auto;padding:1rem;">
+            <div style="max-width:480px;margin:0 auto;padding-bottom:2rem;">
 
-                <!-- En-tête -->
-                <div class="sc-hero py-4 px-3 mb-4 text-center"
-                     style="border-radius:20px;">
-                    <h4 class="fw-bold text-white mb-1">Créer mon compte</h4>
-                    <p style="color:rgba(255,255,255,0.8);font-size:0.9rem;margin:0;">
-                        Rejoignez SenClean pour réserver vos services ménagers
+                <!-- En-tête hero -->
+                <div class="sc-hero mb-4" style="margin:-1rem -1rem 0;border-radius:0 0 24px 24px;text-align:center;padding:2rem 1.5rem 1.5rem;">
+                    <a href="/my" style="position:absolute;top:1rem;left:1rem;color:rgba(255,255,255,.8);font-size:0.82rem;text-decoration:none;">
+                        &#8592; Accueil
+                    </a>
+                    <h4 style="color:#fff;font-size:1.2rem;font-weight:700;margin:0 0 4px;position:relative;z-index:1;">
+                        Créer mon compte
+                    </h4>
+                    <p style="color:rgba(255,255,255,.8);font-size:0.82rem;margin:0;position:relative;z-index:1;">
+                        Rejoignez SenClean pour réserver vos services
                     </p>
                 </div>
 
-                <form method="POST" action="/inscription">
+                <!-- Erreur globale -->
+                <t t-if="error.get('global')">
+                    <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;padding:10px 14px;margin:0 0 1rem;font-size:0.82rem;color:#b91c1c;">
+                        <t t-out="error['global']"/>
+                    </div>
+                </t>
+
+                <!--
+                    novalidate : désactive la validation HTML5 du navigateur mobile
+                    qui bloque silencieusement sur type=email/tel
+                    La validation est faite côté serveur Python
+                -->
+                <form method="POST" action="/inscription" novalidate="novalidate"
+                      style="padding:0 0.5rem;">
                     <input type="hidden" name="csrf_token"
                            t-att-value="request.csrf_token()"/>
-                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+                    <input type="hidden" name="redirect" t-att-value="redirect or '/my'"/>
 
                     <!-- Nom -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">
                             Nom complet <span class="text-danger">*</span>
                         </label>
-                        <input type="text" name="name"
+                        <input type="text" name="name" autocomplete="name"
                                t-att-value="kw.get('name', '')"
                                placeholder="Ex: Fatou Diallo"
-                               t-attf-class="form-control #{
-                                   'is-invalid' if error.get('name') else ''}"/>
-                        <div t-if="error.get('name')" class="invalid-feedback d-block">
+                               t-attf-class="form-control #{'is-invalid' if error.get('name') else ''}"/>
+                        <div t-if="error.get('name')" class="invalid-feedback d-block"
+                             style="font-size:0.78rem;">
                             <t t-out="error['name']"/>
                         </div>
                     </div>
 
                     <!-- Téléphone -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">
                             Téléphone <span class="text-danger">*</span>
                         </label>
-                        <input type="tel" name="phone"
+                        <input type="text" name="phone" autocomplete="tel" inputmode="tel"
                                t-att-value="kw.get('phone', '')"
                                placeholder="Ex: 77 123 45 67"
-                               t-attf-class="form-control #{
-                                   'is-invalid' if error.get('phone') else ''}"/>
-                        <div t-if="error.get('phone')" class="invalid-feedback d-block">
+                               t-attf-class="form-control #{'is-invalid' if error.get('phone') else ''}"/>
+                        <div t-if="error.get('phone')" class="invalid-feedback d-block"
+                             style="font-size:0.78rem;">
                             <t t-out="error['phone']"/>
                         </div>
                     </div>
 
                     <!-- Email -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            Adresse email <span class="text-danger">*</span>
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                            Email <span class="text-danger">*</span>
                         </label>
-                        <input type="email" name="email"
+                        <input type="text" name="email" autocomplete="email" inputmode="email"
                                t-att-value="kw.get('email', '')"
                                placeholder="votre@email.com"
-                               t-attf-class="form-control #{
-                                   'is-invalid' if error.get('email') else ''}"/>
-                        <div t-if="error.get('email')" class="invalid-feedback d-block">
+                               t-attf-class="form-control #{'is-invalid' if error.get('email') else ''}"/>
+                        <div t-if="error.get('email')" class="invalid-feedback d-block"
+                             style="font-size:0.78rem;">
                             <t t-out="error['email']"/>
                         </div>
                     </div>
 
                     <!-- Adresse -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Adresse</label>
-                        <input type="text" name="address"
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                            Adresse
+                        </label>
+                        <input type="text" name="address" autocomplete="street-address"
                                t-att-value="kw.get('address', '')"
                                placeholder="Ex: Lot 45, Cité Keur Gorgui"
                                class="form-control"/>
@@ -494,54 +529,76 @@
 
                     <!-- Ville -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Ville</label>
-                        <input type="text" name="city"
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                            Ville
+                        </label>
+                        <input type="text" name="city" autocomplete="address-level2"
                                t-att-value="kw.get('city', 'Dakar')"
                                class="form-control"/>
                     </div>
 
                     <!-- Mot de passe -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">
                             Mot de passe <span class="text-danger">*</span>
                         </label>
-                        <input type="password" name="password"
+                        <input type="password" name="password" autocomplete="new-password"
                                placeholder="Minimum 6 caractères"
-                               t-attf-class="form-control #{
-                                   'is-invalid' if error.get('password') else ''}"/>
-                        <div t-if="error.get('password')" class="invalid-feedback d-block">
+                               t-attf-class="form-control #{'is-invalid' if error.get('password') else ''}"/>
+                        <div t-if="error.get('password')" class="invalid-feedback d-block"
+                             style="font-size:0.78rem;">
                             <t t-out="error['password']"/>
                         </div>
                     </div>
 
-                    <!-- Confirmation mot de passe -->
+                    <!-- Confirmation -->
                     <div class="mb-4">
-                        <label class="form-label fw-bold">
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">
                             Confirmer le mot de passe <span class="text-danger">*</span>
                         </label>
-                        <input type="password" name="confirm_password"
+                        <input type="password" name="confirm_password" autocomplete="new-password"
                                placeholder="Répétez le mot de passe"
-                               t-attf-class="form-control #{
-                                   'is-invalid' if error.get('confirm_password') else ''}"/>
-                        <div t-if="error.get('confirm_password')"
-                             class="invalid-feedback d-block">
+                               t-attf-class="form-control #{'is-invalid' if error.get('confirm_password') else ''}"/>
+                        <div t-if="error.get('confirm_password')" class="invalid-feedback d-block"
+                             style="font-size:0.78rem;">
                             <t t-out="error['confirm_password']"/>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-lg w-100 fw-bold mb-3"
-                            style="background:#1A5C3A;color:#fff;border-radius:14px;padding:0.9rem;">
-                        <i class="fa fa-user-plus me-2"/>Créer mon compte
+                    <!-- Bouton submit -->
+                    <button id="sc_insc_btn" type="button"
+                            style="display:block;width:100%;padding:14px;background:#0F6E56;
+                                   color:#fff;border:none;border-radius:12px;font-size:1rem;
+                                   font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;
+                                   touch-action:manipulation;">
+                        Créer mon compte
                     </button>
 
-                    <p class="text-center text-muted small">
+                    <p class="text-center mt-3" style="font-size:0.82rem;color:#777;">
                         Déjà inscrit ?
-                        <a t-attf-href="/web/login?redirect=#{redirect}"
-                           style="color:#1A5C3A;font-weight:600;">
+                        <a t-attf-href="/web/login?redirect=#{redirect or '/my'}"
+                           style="color:#0F6E56;font-weight:600;">
                             Se connecter
                         </a>
                     </p>
                 </form>
+
+                <script>
+                (function () {
+                    var btn  = document.getElementById('sc_insc_btn');
+                    var form = btn.closest('form');
+
+                    btn.addEventListener('click', function () {
+                        // Feedback visuel immédiat
+                        btn.textContent = 'Création en cours…';
+                        btn.style.opacity = '0.7';
+                        btn.disabled = true;
+
+                        // Soumission NATIVE — bypasse jQuery/Odoo qui intercepte submit()
+                        HTMLFormElement.prototype.submit.call(form);
+                    });
+                })();
+                </script>
             </div>
         </t>
     </template>
@@ -1059,67 +1116,201 @@
     </template>
 
     <!-- ============================================================
-         3. Liste des missions  /my/missions
+         3. Mes réservations  /my/missions  — vue cartes mobile
     ============================================================ -->
-    <template id="portal_my_missions" name="Mes missions SenClean">
+    <template id="portal_my_missions" name="Mes réservations SenClean">
         <t t-call="portal.portal_layout">
-            <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            <t t-call="portal.portal_searchbar">
-                <t t-set="title">Mes missions</t>
-            </t>
+            <div class="sc-portal-home">
 
-            <div t-if="not missions" class="alert alert-info mt-3" role="alert">
-                Vous n'avez aucune mission pour le moment.
-            </div>
+                <!-- Hero -->
+                <div class="sc-hero" style="border-radius:0 0 20px 20px;">
+                    <div class="sc-hero-top">
+                        <div>
+                            <p class="sc-greeting">Mes réservations</p>
+                            <p class="sc-username">
+                                <t t-out="counts['all']"/> mission<t t-if="counts['all'] > 1">s</t>
+                                au total
+                            </p>
+                        </div>
+                        <a href="/my" style="color:rgba(255,255,255,.7);font-size:0.78rem;text-decoration:none;">
+                            <i class="fa fa-arrow-left"/> Accueil
+                        </a>
+                    </div>
+                </div>
 
-            <t t-if="missions" t-call="portal.portal_table">
-                <thead>
-                    <tr class="active">
-                        <th>Référence</th>
-                        <th>Prestataire</th>
-                        <th>Catégorie</th>
-                        <th class="text-center">Date</th>
-                        <th class="text-center">Statut</th>
-                        <th class="text-end">Montant (FCFA)</th>
-                    </tr>
-                </thead>
-                <t t-foreach="missions" t-as="mission">
-                    <tr>
-                        <td>
-                            <a t-attf-href="/my/missions/#{mission.id}">
-                                <t t-out="mission.name"/>
-                            </a>
-                        </td>
-                        <td><t t-out="mission.provider_id.name"/></td>
-                        <td><t t-out="mission.category_id.name"/></td>
-                        <td class="text-center">
-                            <span t-field="mission.date_start"
-                                  t-options='{"format": "dd/MM/yyyy"}'/>
-                        </td>
-                        <td class="text-center">
-                            <span t-attf-class="badge rounded-pill #{
-                                'text-bg-success' if mission.state == 'done' else
-                                'text-bg-primary' if mission.state == 'in_progress' else
-                                'text-bg-warning' if mission.state == 'confirmed' else
-                                'text-bg-danger' if mission.state == 'cancelled' else
-                                'text-bg-secondary'}">
-                                <t t-out="dict(mission._fields['state'].selection).get(mission.state)"/>
-                            </span>
-                        </td>
-                        <td class="text-end">
-                            <t t-if="mission.rate_type == 'monthly'">
-                                <em class="text-muted">Forfait mensuel</em>
+                <!-- Onglets de statut -->
+                <div style="display:flex;gap:6px;overflow-x:auto;padding:10px 14px 6px;scrollbar-width:none;">
+                    <t t-foreach="state_filters.items()" t-as="sf">
+                        <a t-attf-href="/my/missions?filter_state=#{sf[0]}"
+                           t-attf-style="
+                               flex-shrink:0;
+                               padding:5px 10px;
+                               border-radius:20px;
+                               font-size:0.72rem;
+                               font-weight:500;
+                               text-decoration:none;
+                               white-space:nowrap;
+                               #{
+                                   'background:#0F6E56;color:#fff;'
+                                   if active_filter == sf[0]
+                                   else 'background:#f0f0f0;color:#555;'
+                               }">
+                            <t t-out="sf[1]['label']"/>
+                            <t t-if="counts.get(sf[0], 0)">
+                                <span t-attf-style="
+                                    margin-left:4px;
+                                    background:#{
+                                        'rgba(255,255,255,.3)'
+                                        if active_filter == sf[0]
+                                        else 'rgba(0,0,0,.1)'
+                                    };
+                                    border-radius:10px;padding:1px 6px;font-size:0.65rem;">
+                                    <t t-out="counts[sf[0]]"/>
+                                </span>
                             </t>
-                            <t t-else="">
-                                <t t-out="'{:,.0f}'.format(mission.amount_total)"/>
-                            </t>
-                        </td>
-                    </tr>
-                </t>
-            </t>
+                        </a>
+                    </t>
+                </div>
 
-            <div t-if="pager" class="o_portal_pager text-center">
-                <t t-call="portal.pager" t-value="pager"/>
+                <!-- Cartes missions -->
+                <div style="padding:4px 14px 80px;">
+
+                    <div t-if="not missions"
+                         style="text-align:center;padding:3rem 1rem;color:#aaa;">
+                        <i class="fa fa-calendar-o"
+                           style="font-size:2.5rem;margin-bottom:12px;display:block;color:#ddd;"/>
+                        <p style="font-size:0.85rem;font-weight:500;color:#888;margin-bottom:4px;">
+                            Aucune réservation
+                            <t t-if="active_filter != 'all'">
+                                dans cette catégorie
+                            </t>
+                        </p>
+                        <a href="/providers"
+                           style="font-size:0.78rem;color:#0F6E56;font-weight:500;">
+                            Trouver un prestataire &#8594;
+                        </a>
+                    </div>
+
+                    <t t-foreach="missions" t-as="m">
+                        <a t-attf-href="/my/missions/#{m['id']}"
+                           style="display:block;text-decoration:none;color:inherit;">
+                            <div class="sc-provider-card" style="margin-bottom:8px;flex-direction:column;gap:0;padding:12px;">
+
+                                <!-- Ligne 1 : avatar + nom prestataire + statut -->
+                                <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:8px;">
+                                    <div class="sc-avatar-initials"
+                                         t-attf-style="background-color: #{m['provider_avatar_color']};width:40px;height:40px;font-size:0.85rem;flex-shrink:0;">
+                                        <t t-out="m['provider_initials']"/>
+                                    </div>
+                                    <div style="flex:1;min-width:0;">
+                                        <div style="font-size:0.85rem;font-weight:600;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                            <t t-out="m['provider_name']"/>
+                                            <t t-if="m['is_certified']">
+                                                <span class="sc-badge-dispo" style="font-size:0.6rem;margin-left:4px;">&#10003;</span>
+                                            </t>
+                                        </div>
+                                        <div style="font-size:0.72rem;color:#888;">
+                                            <t t-out="m['category']"/>
+                                        </div>
+                                    </div>
+                                    <!-- Badge statut -->
+                                    <span t-attf-style="
+                                        flex-shrink:0;font-size:0.65rem;font-weight:500;
+                                        border-radius:20px;padding:3px 8px;
+                                        #{
+                                            'background:#E1F5EE;color:#085041;'
+                                            if m['state'] == 'done' else
+                                            'background:#E3F2FD;color:#1565C0;'
+                                            if m['state'] == 'in_progress' else
+                                            'background:#FFF9C4;color:#795548;'
+                                            if m['state'] == 'confirmed' else
+                                            'background:#FFEBEE;color:#C62828;'
+                                        }">
+                                        <t t-if="m['state'] == 'done'">Terminée</t>
+                                        <t t-elif="m['state'] == 'in_progress'">En cours</t>
+                                        <t t-elif="m['state'] == 'confirmed'">Confirmée</t>
+                                        <t t-else="">Annulée</t>
+                                    </span>
+                                </div>
+
+                                <!-- Ligne 2 : date + adresse + tarif -->
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:0.5px solid #f0f0f0;">
+                                    <div style="font-size:0.72rem;color:#666;display:flex;gap:10px;flex-wrap:wrap;">
+                                        <span t-if="m['date_start']">
+                                            <i class="fa fa-calendar" style="color:#0F6E56;margin-right:3px;"/>
+                                            <t t-out="m['date_start'].strftime('%d/%m/%Y %H:%M')"/>
+                                        </span>
+                                        <span t-if="m['city']">
+                                            <i class="fa fa-map-marker" style="color:#0F6E56;margin-right:3px;"/>
+                                            <t t-out="m['city']"/>
+                                        </span>
+                                    </div>
+                                    <div style="font-size:0.78rem;font-weight:600;color:#0F6E56;white-space:nowrap;margin-left:8px;">
+                                        <t t-if="m['rate_type'] == 'monthly'">
+                                            Forfait/mois
+                                        </t>
+                                        <t t-else="">
+                                            <t t-out="'{:,.0f}'.format(m['amount_total'])"/> FCFA
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <!-- Ligne 3 : paiement si terminée -->
+                                <t t-if="m['state'] == 'done'">
+                                    <div style="margin-top:6px;display:flex;align-items:center;gap:6px;">
+                                        <t t-if="m['payment_state'] == 'paid'">
+                                            <span style="font-size:0.65rem;background:#E1F5EE;color:#085041;border-radius:20px;padding:2px 8px;">
+                                                <i class="fa fa-check-circle"/> Payée
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span style="font-size:0.65rem;background:#FAEEDA;color:#854F0B;border-radius:20px;padding:2px 8px;">
+                                                <i class="fa fa-clock-o"/> Paiement en attente
+                                            </span>
+                                        </t>
+                                    </div>
+                                </t>
+
+                            </div>
+                        </a>
+                    </t>
+
+                    <div t-if="pager" class="o_portal_pager text-center mt-2">
+                        <t t-call="portal.pager" t-value="pager"/>
+                    </div>
+
+                </div>
+
+                <!-- Bouton flottant "Nouvelle réservation" -->
+                <a href="/providers"
+                   style="position:fixed;bottom:74px;right:16px;
+                          background:#0F6E56;color:#fff;border-radius:50px;
+                          padding:10px 16px;font-size:0.82rem;font-weight:600;
+                          box-shadow:0 4px 16px rgba(15,110,86,.4);
+                          text-decoration:none;z-index:99;
+                          display:flex;align-items:center;gap:6px;">
+                    <i class="fa fa-plus"/> Réserver
+                </a>
+
+                <!-- Nav bar -->
+                <nav class="sc-nav-bar">
+                    <a href="/my" class="sc-nav-item">
+                        <i class="fa fa-home"/><span>Accueil</span>
+                    </a>
+                    <a href="/providers" class="sc-nav-item">
+                        <i class="fa fa-search"/><span>Recherche</span>
+                    </a>
+                    <a href="/my/missions" class="sc-nav-item active">
+                        <i class="fa fa-calendar"/><span>Réservations</span>
+                    </a>
+                    <a href="/web/login" class="sc-nav-item">
+                        <i class="fa fa-envelope-o"/><span>Messages</span>
+                    </a>
+                    <a href="/my" class="sc-nav-item">
+                        <i class="fa fa-user"/><span>Profil</span>
+                    </a>
+                </nav>
+
             </div>
         </t>
     </template>

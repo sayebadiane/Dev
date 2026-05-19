@@ -5,6 +5,7 @@ access_senclean_category_admin,senclean.service.category.admin,model_senclean_se
 access_senclean_provider_user,senclean.provider.user,model_senclean_provider,senclean.group_senclean_user,1,0,0,0
 access_senclean_provider_manager,senclean.provider.manager,model_senclean_provider,senclean.group_senclean_manager,1,1,1,0
 access_senclean_provider_admin,senclean.provider.admin,model_senclean_provider,senclean.group_senclean_admin,1,1,1,1
+access_senclean_mission_portal,senclean.mission.portal,model_senclean_mission,base.group_portal,1,1,1,0
 access_senclean_mission_user,senclean.mission.user,model_senclean_mission,senclean.group_senclean_user,1,1,1,0
 access_senclean_mission_manager,senclean.mission.manager,model_senclean_mission,senclean.group_senclean_manager,1,1,1,0
 access_senclean_mission_admin,senclean.mission.admin,model_senclean_mission,senclean.group_senclean_admin,1,1,1,1
